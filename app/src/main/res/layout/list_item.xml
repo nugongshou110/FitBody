@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/container"
+    >
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardview"
+        android:layout_width="match_parent"
+        android:layout_margin="16dp"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp">
+
+            <com.zhangqi.architecture.view.widget.CircleImageView
+                android:id="@+id/item_avatar"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:padding="16dp"
+                android:src="@drawable/wuyanzu" />
+
+            <Button
+                android:id="@+id/item_cash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_round_coner"
+                android:text="500元"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="14dp"
+                android:layout_toRightOf="@id/item_avatar"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_toRightOf="@id/item_name"
+                android:text="的健身计划"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <com.zhangqi.architecture.view.widget.CircleImageView
+                android:id="@+id/follower_1"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_below="@id/item_name"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/item_avatar" />
+
+            <com.zhangqi.architecture.view.widget.CircleImageView
+                android:id="@+id/follower_2"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_below="@id/item_name"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/follower_1" />
+
+            <com.zhangqi.architecture.view.widget.CircleImageView
+                android:id="@+id/follower_3"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_below="@id/item_name"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/follower_2" />
+            <com.zhangqi.architecture.view.widget.CircleImageView
+                android:id="@+id/follower_4"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_below="@id/item_name"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toEndOf="@id/follower_3" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

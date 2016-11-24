@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2016年11月11日-2016年11月12日"
+                android:textColor="#000000"
+                android:paddingLeft="16dp"
+                android:paddingTop="5dp"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/plan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/date"
+                android:paddingLeft="16dp"
+                android:paddingTop="5dp"
+                android:text="跑步" />
+
+            <LinearLayout
+                android:id="@+id/judge_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/plan"
+                android:orientation="horizontal">
+
+                <com.zhangqi.architecture.view.widget.JudgeView
+                    android:id="@+id/judger_1"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1" />
+
+                <com.zhangqi.architecture.view.widget.JudgeView
+                    android:id="@+id/judger_2"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1" />
+
+                <com.zhangqi.architecture.view.widget.JudgeView
+                    android:id="@+id/judger_3"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1" />
+
+                <com.zhangqi.architecture.view.widget.JudgeView
+                    android:id="@+id/judger_4"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/state"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_round_state_ongoing"
+        android:textColor="@color/white"
+        android:layout_alignParentRight="true"
+
+        />
+
+</RelativeLayout>

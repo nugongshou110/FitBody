@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/userinfo"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/colorPrimary"
+
+        >
+
+        <com.zhangqi.architecture.view.widget.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/wuyanzu" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/avatar"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingStart="16dp">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Daniel Wu"
+                android:textColor="#ffffff"
+                android:textSize="16sp" />
+
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:orientation="horizontal"
+               android:layout_height="wrap_content">
+               <com.zhangqi.architecture.view.widget.CircleImageView
+                   android:id="@+id/follower_1"
+                   android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:layout_below="@id/item_name"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="10dp"
+                   android:layout_toEndOf="@id/item_avatar" />
+
+               <com.zhangqi.architecture.view.widget.CircleImageView
+                   android:id="@+id/follower_2"
+                   android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:layout_below="@id/item_name"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="10dp"
+                   android:layout_toEndOf="@id/follower_1" />
+
+               <com.zhangqi.architecture.view.widget.CircleImageView
+                   android:id="@+id/follower_3"
+                   android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:layout_below="@id/item_name"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="10dp"
+                   android:layout_toEndOf="@id/follower_2" />
+               <com.zhangqi.architecture.view.widget.CircleImageView
+                   android:id="@+id/follower_4"
+                   android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:layout_below="@id/item_name"
+                   android:layout_marginStart="10dp"
+                   android:layout_marginTop="10dp"
+                   android:layout_toEndOf="@id/follower_3" />
+           </LinearLayout>
+        </LinearLayout>
+        <Button
+            android:id="@+id/add_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="16dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_round_coner"
+            android:text="监督他"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
+
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/detail_listview"
+        android:layout_width="match_parent"
+        android:scrollbars="none"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:layout_height="wrap_content">
+
+    </ListView>
+</LinearLayout>
