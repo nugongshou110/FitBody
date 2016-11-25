@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,10 +17,13 @@ import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.zhangqi.architecture.R;
 import com.zhangqi.architecture.adapter.PlanListAdapter;
 import com.zhangqi.architecture.adapter.api.ICardViewListener;
 import com.zhangqi.architecture.model.bean.PlanListModel;
+import com.zhangqi.architecture.model.bean.UserInfo;
 import com.zhangqi.architecture.presenter.MainPresenter;
 import com.zhangqi.architecture.presenter.api.IMainViewListener;
 import com.zhangqi.architecture.util.Constant;
@@ -54,12 +59,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         registerListener();
         //TODO test data
         onRequestSuccess(mTestData);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-//                register();
-            }
-        }).start();
 
     }
 
@@ -69,10 +68,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 //        UploadPhoto.getInstance().doUpload(url,"\"userName\":\"jiguangteng\",\"password\":\"asdffdsa\"",avatar);
 //    }
 
-    private void login(){
-
-    }
-
     private void initView() {
         mAddNewPlan = (FloatingActionButton) findViewById(R.id.fab);
         mListView = (ListView) findViewById(R.id.listView);
@@ -80,6 +75,24 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mAvatar = (CircleImageView) findViewById(R.id.avatar);
         mName = (TextView) findViewById(R.id.name);
         mScore = (TextView) findViewById(R.id.score);
+        UserInfo userInfo = getUserInfo();
+        if (userInfo != null){
+            mName.setText(userInfo.getName());
+            Glide.with(this).load("http://"+Constant.IP+":8080/arc/user/getImage?url="+userInfo.getAvatar())
+                    .crossFade().centerCrop().into(mAvatar);
+        }else{
+            Log.i("zhangqiaaa","userInfo is null");
+        }
+    }
+
+    private UserInfo getUserInfo() {
+        String userResponse = getIntent().getStringExtra(Constant.LOGIN_RESPONSE);
+        if (!TextUtils.isEmpty(userResponse)){
+            Gson gson = new Gson();
+            return gson.fromJson(userResponse, UserInfo.class);
+        }else{
+            return null;
+        }
     }
 
     private void registerListener() {
