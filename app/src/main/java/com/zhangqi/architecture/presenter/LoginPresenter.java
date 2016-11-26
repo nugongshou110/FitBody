@@ -5,8 +5,10 @@ import android.util.Log;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 import com.zhangqi.architecture.app.AppController;
 import com.zhangqi.architecture.model.api.IGetDataListener;
+import com.zhangqi.architecture.model.bean.UserInfo;
 import com.zhangqi.architecture.model.engine.GetDataImpl;
 import com.zhangqi.architecture.presenter.api.ILoginListener;
 import com.zhangqi.architecture.util.Constant;
@@ -26,7 +28,13 @@ public class LoginPresenter {
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                mView.onLoginSuccess(s);
+                Gson gson = new Gson();
+                UserInfo userInfo = gson.fromJson(s, UserInfo.class);
+                if (userInfo.getCode() == 0){
+                    if (userInfo.getObj() != null){
+                        mView.onLoginSuccess(userInfo.getObj());
+                    }
+                }
             }
         }, new Response.ErrorListener() {
             @Override

@@ -3,7 +3,7 @@
     package="com.zhangqi.architecture">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,8 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".view.activity.MainActivity"
+            android:name=".view.activity.RegisterActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +26,9 @@
         <activity
             android:name=".view.activity.PlanDetailActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".view.activity.LoginActivity" />
+        <activity
+            android:name=".view.activity.LoginActivity"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

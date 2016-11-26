@@ -3,13 +3,10 @@ package com.zhangqi.architecture.view.activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.zhangqi.architecture.R;
 import com.zhangqi.architecture.adapter.PlanListAdapter;
 import com.zhangqi.architecture.adapter.api.ICardViewListener;
@@ -32,9 +28,9 @@ import com.zhangqi.architecture.view.widget.CircleImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, IMainViewListener,ICardViewListener{
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, IMainViewListener, ICardViewListener {
     private ListView mListView;
-    private FloatingActionButton mAddNewPlan;
+    private TextView mAddNewPlan;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private List<PlanListModel.RowsBean> mData;
     private List<PlanListModel.RowsBean> mTestData;
@@ -42,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private MainPresenter mPresenter;
     private CircleImageView mAvatar;
     private TextView mName;
-    private TextView mScore;
+    private TextView mBalance;
+    private UserInfo.UserInfoBean mUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +50,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         getWindow().setEnterTransition(explode);
         getWindow().setReenterTransition(explode);
         setContentView(R.layout.activity_main);
-        mPresenter = new MainPresenter(this);
-        mTestData = new ArrayList<PlanListModel.RowsBean>();
+        initData();
         initView();
         registerListener();
         //TODO test data
@@ -62,37 +58,43 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     }
 
-//    private void register() {
-//        String avatar = "sdcard/Pictures/wuyanzu.png";
-//        String url = "http://183.173.37.144:8080/arc/user/register";
-//        UploadPhoto.getInstance().doUpload(url,"\"userName\":\"jiguangteng\",\"password\":\"asdffdsa\"",avatar);
-//    }
+    private void initData() {
+        mPresenter = new MainPresenter(this);
+        mUserInfo = getUserInfo();
+        mTestData = new ArrayList<PlanListModel.RowsBean>();
+    }
 
     private void initView() {
-        mAddNewPlan = (FloatingActionButton) findViewById(R.id.fab);
+        mAddNewPlan = (TextView) findViewById(R.id.fab);
         mListView = (ListView) findViewById(R.id.listView);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mAvatar = (CircleImageView) findViewById(R.id.avatar);
         mName = (TextView) findViewById(R.id.name);
-        mScore = (TextView) findViewById(R.id.score);
-        UserInfo userInfo = getUserInfo();
-        if (userInfo != null){
-            mName.setText(userInfo.getName());
-            Glide.with(this).load("http://"+Constant.IP+":8080/arc/user/getImage?url="+userInfo.getAvatar())
-                    .crossFade().centerCrop().into(mAvatar);
-        }else{
-            Log.i("zhangqiaaa","userInfo is null");
-        }
+        mBalance = (TextView) findViewById(R.id.balance);
+        initUserInfoPanel();
     }
 
-    private UserInfo getUserInfo() {
-        String userResponse = getIntent().getStringExtra(Constant.LOGIN_RESPONSE);
-        if (!TextUtils.isEmpty(userResponse)){
-            Gson gson = new Gson();
-            return gson.fromJson(userResponse, UserInfo.class);
-        }else{
-            return null;
-        }
+    /**
+     * get user info from loginActivity
+     *
+     * @return UserInfoBean:userName,userId,userBalance,userAvatar
+     */
+    private UserInfo.UserInfoBean getUserInfo() {
+        UserInfo.UserInfoBean userInfoBean = new UserInfo.UserInfoBean();
+        userInfoBean.setUserName(getIntent().getStringExtra(Constant.USER_NAME));
+        userInfoBean.setId(getIntent().getIntExtra(Constant.USER_ID, -1));
+        userInfoBean.setBalance(getIntent().getIntExtra(Constant.USER_BALANCE, -1));
+        userInfoBean.setAvatar(Constant.AVATAR_PREFIX + getIntent().getStringExtra(Constant.USER_AVATAR));
+        return userInfoBean;
+    }
+
+    /**
+     * init User Info UI at top of the screen
+     */
+    private void initUserInfoPanel(){
+        mName.setText(mUserInfo.getUserName());
+        mBalance.setText(String.valueOf(mUserInfo.getBalance()));
+        Glide.with(this).load(mUserInfo.getAvatar()).centerCrop().crossFade().into(mAvatar);
     }
 
     private void registerListener() {
@@ -146,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         followers.add(follower1);
         followers.add(follower2);
         plan1.setSupervison(followers);
-        mTestData.add(0,plan1);
+        mTestData.add(0, plan1);
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
@@ -192,9 +194,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         PlanListModel.RowsBean rowsBean = mData.get(position);
         Intent intent = new Intent(MainActivity.this, PlanDetailActivity.class);
         intent.putExtra(Constant.TITLE, rowsBean.getName() + "的健身计划");
-        intent.putExtra(Constant.AVATAR, rowsBean.getAvatar());
+        intent.putExtra(Constant.USER_AVATAR, rowsBean.getAvatar());
         List<PlanListModel.RowsBean.SupervisonBean> supervison = rowsBean.getSupervison();
-        try{
+        try {
             if (supervison != null && supervison.size() != 0) {
                 if (supervison.get(0) != null) {
                     intent.putExtra(Constant.FOLLOWER_1, supervison.get(0).getAvatar());
@@ -209,9 +211,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     intent.putExtra(Constant.FOLLOWER_4, supervison.get(3).getAvatar());
                 }
             }
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             startActivity(intent);
         }
     }

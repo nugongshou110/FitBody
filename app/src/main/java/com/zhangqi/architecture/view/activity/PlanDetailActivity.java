@@ -47,7 +47,7 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
         mAvater = (CircleImageView) findViewById(R.id.avatar);
         mAddGroup = (Button) findViewById(R.id.add_group);
         mListView = (ListView) findViewById(R.id.detail_listview);
-        Glide.with(this).load(intent.getStringExtra(Constant.AVATAR)).centerCrop().crossFade().into(mAvater);
+        Glide.with(this).load(intent.getStringExtra(Constant.USER_AVATAR)).centerCrop().crossFade().into(mAvater);
         if (intent.getStringExtra(Constant.FOLLOWER_1) != null) {
             mFollower1 = (CircleImageView) findViewById(R.id.follower_1);
             Glide.with(this).load(intent.getStringExtra(Constant.FOLLOWER_1)).centerCrop().crossFade().into(mFollower1);

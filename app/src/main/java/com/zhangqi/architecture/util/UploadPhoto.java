@@ -1,6 +1,6 @@
 package com.zhangqi.architecture.util;
 
-import android.util.Log;
+import com.zhangqi.architecture.presenter.api.IRegisterListener;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -22,12 +22,17 @@ public class UploadPhoto {
     public static final String SUCCESS = "1";
     public static final String FAILURE = "0";
     private static UploadPhoto mInstance;
+    private IRegisterListener mRegisterListener;
 
-    public static UploadPhoto getInstance() {
+    public static UploadPhoto getInstance(IRegisterListener listener) {
         if (mInstance == null) {
-            mInstance = new UploadPhoto();
+            mInstance = new UploadPhoto(listener);
         }
         return mInstance;
+    }
+
+    public UploadPhoto(IRegisterListener listener){
+        mRegisterListener = listener;
     }
 
     public String doUpload(String RequestURL,String msg,String picturePath) {
@@ -83,8 +88,7 @@ public class UploadPhoto {
                  */
                 int res = conn.getResponseCode();
                 if (res == 200) {
-                    String responseMessage = conn.getResponseMessage();
-                    Log.i("zhangqiaaa","message = "+responseMessage);
+                    mRegisterListener.onRegisterSuccess();
                     return SUCCESS;
                 }
             }
