@@ -1,5 +1,7 @@
 package com.zhangqi.architecture.presenter.api;
 
+import android.content.Context;
+
 import com.zhangqi.architecture.model.bean.PlanListModel;
 
 import java.util.List;
@@ -9,4 +11,8 @@ import java.util.List;
  */
 public interface IMainViewListener {
     void onRequestSuccess(List<PlanListModel.RowsBean> data);
+    Context onGetContext();
+    void onUpdateUserBalance(String balance);
+    String onGetUserId();
+
 }

@@ -1,6 +1,7 @@
 package com.zhangqi.architecture.view.activity;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -53,9 +54,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         initData();
         initView();
         registerListener();
-        //TODO test data
-        onRequestSuccess(mTestData);
-
     }
 
     private void initData() {
@@ -91,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     /**
      * init User Info UI at top of the screen
      */
-    private void initUserInfoPanel(){
+    private void initUserInfoPanel() {
         mName.setText(mUserInfo.getUserName());
         mBalance.setText(String.valueOf(mUserInfo.getBalance()));
         Glide.with(this).load(mUserInfo.getAvatar()).centerCrop().crossFade().into(mAvatar);
@@ -133,55 +131,37 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
-        PlanListModel.RowsBean plan1 = new PlanListModel.RowsBean();
-        plan1.setPlanId("1");
-        plan1.setName("张奇");
-        plan1.setCash("500元");
-        plan1.setAvatar("http://h.hiphotos.baidu.com/zhidao/pic/item/0eb30f2442a7d9334f268ca9a84bd11372f00159.jpg");
-        List<PlanListModel.RowsBean.SupervisonBean> followers = new ArrayList<>();
-        PlanListModel.RowsBean.SupervisonBean follower1 = new PlanListModel.RowsBean.SupervisonBean();
-        follower1.setName("姬广滕");
-        follower1.setAvatar("http://img3.duitang.com/uploads/item/201507/30/20150730163111_YZT5S.thumb.700_0.jpeg");
-        PlanListModel.RowsBean.SupervisonBean follower2 = new PlanListModel.RowsBean.SupervisonBean();
-        follower2.setName("尚静");
-        follower2.setAvatar("http://a.hiphotos.baidu.com/zhidao/pic/item/f9dcd100baa1cd11aa2ca018bf12c8fcc3ce2d74.jpg");
-        followers.add(follower1);
-        followers.add(follower2);
-        plan1.setSupervison(followers);
-        mTestData.add(0, plan1);
-        mSwipeRefreshLayout.setRefreshing(false);
+        if (mData != null && mData.size() != 0) {
+            mData.clear();
+        }
+        mPresenter.getPlanList();
     }
 
     @Override
     public void onRequestSuccess(List<PlanListModel.RowsBean> data) {
         mData = data;
-        PlanListModel.RowsBean plan1 = new PlanListModel.RowsBean();
-        plan1.setPlanId("1");
-        plan1.setName("张奇");
-        plan1.setCash("500元");
-        plan1.setAvatar("http://h.hiphotos.baidu.com/zhidao/pic/item/0eb30f2442a7d9334f268ca9a84bd11372f00159.jpg");
-        List<PlanListModel.RowsBean.SupervisonBean> followers = new ArrayList<>();
-        PlanListModel.RowsBean.SupervisonBean follower1 = new PlanListModel.RowsBean.SupervisonBean();
-        follower1.setName("姬广滕");
-        follower1.setAvatar("http://183.173.37.144:8080/arc/user/getImage?url=/media/ji/document/school/arc/photo/1.jpeg");
-        PlanListModel.RowsBean.SupervisonBean follower2 = new PlanListModel.RowsBean.SupervisonBean();
-        follower2.setName("尚静");
-        follower2.setAvatar("http://a.hiphotos.baidu.com/zhidao/pic/item/f9dcd100baa1cd11aa2ca018bf12c8fcc3ce2d74.jpg");
-        followers.add(follower1);
-        followers.add(follower2);
-        plan1.setSupervison(followers);
-        mTestData.add(plan1);
-        mTestData.add(plan1);
-        mTestData.add(plan1);
-        mTestData.add(plan1);
-        mTestData.add(plan1);
-        mTestData.add(plan1);
+        mSwipeRefreshLayout.setRefreshing(false);
         updateListView();
+    }
+
+    @Override
+    public void onUpdateUserBalance(String balance) {
+        mBalance.setText(balance);
+    }
+
+    @Override
+    public Context onGetContext() {
+        return getApplicationContext();
+    }
+
+    @Override
+    public String onGetUserId() {
+        return String.valueOf(mUserInfo.getId());
     }
 
     private void updateListView() {
         if (mAdatper == null) {
-            mAdatper = new PlanListAdapter(this, mTestData);
+            mAdatper = new PlanListAdapter(this, mData);
             mAdatper.setCardViewListener(this);
             mListView.setAdapter(mAdatper);
         } else {
@@ -193,22 +173,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onCardViewClick(int position) {
         PlanListModel.RowsBean rowsBean = mData.get(position);
         Intent intent = new Intent(MainActivity.this, PlanDetailActivity.class);
-        intent.putExtra(Constant.TITLE, rowsBean.getName() + "的健身计划");
-        intent.putExtra(Constant.USER_AVATAR, rowsBean.getAvatar());
-        List<PlanListModel.RowsBean.SupervisonBean> supervison = rowsBean.getSupervison();
+        intent.putExtra(Constant.TITLE, rowsBean.getUserName() + "的健身计划");
+        intent.putExtra(Constant.USER_AVATAR, Constant.AVATAR_PREFIX + rowsBean.getUserAvatar());
+        List<PlanListModel.RowsBean.SupervisorsBean> supervison = rowsBean.getSupervisors();
         try {
             if (supervison != null && supervison.size() != 0) {
                 if (supervison.get(0) != null) {
-                    intent.putExtra(Constant.FOLLOWER_1, supervison.get(0).getAvatar());
+                    intent.putExtra(Constant.FOLLOWER_1, Constant.AVATAR_PREFIX + supervison.get(0).getAvatar());
                 }
                 if (supervison.get(1) != null) {
-                    intent.putExtra(Constant.FOLLOWER_2, supervison.get(1).getAvatar());
+                    intent.putExtra(Constant.FOLLOWER_2, Constant.AVATAR_PREFIX + supervison.get(1).getAvatar());
                 }
                 if (supervison.get(2) != null) {
-                    intent.putExtra(Constant.FOLLOWER_3, supervison.get(2).getAvatar());
+                    intent.putExtra(Constant.FOLLOWER_3, Constant.AVATAR_PREFIX + supervison.get(2).getAvatar());
                 }
                 if (supervison.get(3) != null) {
-                    intent.putExtra(Constant.FOLLOWER_4, supervison.get(3).getAvatar());
+                    intent.putExtra(Constant.FOLLOWER_4, Constant.AVATAR_PREFIX + supervison.get(3).getAvatar());
                 }
             }
         } catch (IndexOutOfBoundsException e) {

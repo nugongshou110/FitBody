@@ -6,13 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zhangqi.architecture.R;
 import com.zhangqi.architecture.adapter.api.ICardViewListener;
 import com.zhangqi.architecture.model.bean.PlanListModel;
+import com.zhangqi.architecture.util.Constant;
 import com.zhangqi.architecture.view.widget.CircleImageView;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class PlanListAdapter extends BaseAdapter {
         mData = data;
     }
 
-    public void setCardViewListener(ICardViewListener listener){
+    public void setCardViewListener(ICardViewListener listener) {
         mCardViewListener = listener;
     }
 
@@ -64,7 +64,7 @@ public class PlanListAdapter extends BaseAdapter {
             viewHolder.mFollower_4 = (CircleImageView) convertView.findViewById(R.id.follower_4);
             viewHolder.mCardView = (CardView) convertView.findViewById(R.id.cardview);
             viewHolder.mName = (TextView) convertView.findViewById(R.id.item_name);
-            viewHolder.mCash = (Button) convertView.findViewById(R.id.item_cash);
+            viewHolder.mCash = (TextView) convertView.findViewById(R.id.item_cash);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -73,39 +73,39 @@ public class PlanListAdapter extends BaseAdapter {
         viewHolder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCardViewListener != null){
+                if (mCardViewListener != null) {
                     mCardViewListener.onCardViewClick(position);
                 }
             }
         });
-        viewHolder.mName.setText(rowsBean.getName());
-        viewHolder.mCash.setText(rowsBean.getCash());
+        viewHolder.mName.setText(rowsBean.getUserName());
+        viewHolder.mCash.setText(rowsBean.getMoney());
         Glide.with(mActivity)
-                .load(rowsBean.getAvatar())
+                .load(Constant.AVATAR_PREFIX + rowsBean.getUserAvatar())
                 .centerCrop()
                 .crossFade()
                 .into(viewHolder.mAvatar);
-        List<PlanListModel.RowsBean.SupervisonBean> supervison = rowsBean.getSupervison();
+        List<PlanListModel.RowsBean.SupervisorsBean> supervison = rowsBean.getSupervisors();
         if (supervison != null && supervison.size() != 0) {
             try {
                 if (supervison.get(0) != null) {
                     Glide.with(mActivity)
-                            .load(supervison.get(0).getAvatar())
+                            .load(Constant.AVATAR_PREFIX + supervison.get(0).getAvatar())
                             .centerCrop().crossFade().into(viewHolder.mFollower_1);
                 }
                 if (supervison.get(1) != null) {
                     Glide.with(mActivity)
-                            .load(supervison.get(1).getAvatar())
+                            .load(Constant.AVATAR_PREFIX + supervison.get(1).getAvatar())
                             .centerCrop().crossFade().into(viewHolder.mFollower_2);
                 }
                 if (supervison.get(2) != null) {
                     Glide.with(mActivity)
-                            .load(supervison.get(2).getAvatar())
+                            .load(Constant.AVATAR_PREFIX + supervison.get(2).getAvatar())
                             .centerCrop().crossFade().into(viewHolder.mFollower_3);
                 }
                 if (supervison.get(3) != null) {
                     Glide.with(mActivity)
-                            .load(supervison.get(3).getAvatar())
+                            .load(Constant.AVATAR_PREFIX + supervison.get(3).getAvatar())
                             .crossFade().crossFade().into(viewHolder.mFollower_4);
                 }
             } catch (IndexOutOfBoundsException e) {
@@ -121,6 +121,6 @@ public class PlanListAdapter extends BaseAdapter {
         private CardView mCardView;
         private CircleImageView mAvatar, mFollower_1, mFollower_2, mFollower_3, mFollower_4;
         private TextView mName;
-        private Button mCash;
+        private TextView mCash;
     }
 }
