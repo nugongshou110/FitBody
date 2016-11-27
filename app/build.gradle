@@ -56,4 +56,5 @@ dependencies {
     //    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
     //    compile files('libs/httpclient-android-4.3.5.1 (1).jar')
 //    compile files('libs/httpclient-android-4.3.5.jar')
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }

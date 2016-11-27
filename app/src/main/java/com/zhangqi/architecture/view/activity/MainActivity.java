@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.view.Menu;
@@ -54,6 +55,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         initData();
         initView();
         registerListener();
+        refreshPlanList();
+    }
+
+    private void refreshPlanList() {
+        String addPlan = getIntent().getStringExtra(Constant.ADD_PLAN);
+        if (!TextUtils.isEmpty(addPlan)) {
+            mData.clear();
+            mSwipeRefreshLayout.setRefreshing(true);
+            mPresenter.getPlanList();
+        }
     }
 
     private void initData() {
@@ -102,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             public void onClick(View view) {
                 //TODO 新建计划
                 Intent intent = new Intent(MainActivity.this, AddPlanActivity.class);
+                intent.putExtra(Constant.USER_ID, mUserInfo.getId());
                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
             }
         });

@@ -16,4 +16,6 @@ public class Constant {
     public static final String USER_BALANCE = "user_balance";
     public static final String AVATAR_PREFIX = "http://"+IP+":8080/arc/user/getImage?url=";
     public static final int RESULT_LOAD_IMAGE = 11;
+    public static final String ADD_PLAN = "add_plan";
+    public static final String ADD_PLAN_SUCCESS = "success";
 }
