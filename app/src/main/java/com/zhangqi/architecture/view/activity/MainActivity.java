@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.zhangqi.architecture.R;
 import com.zhangqi.architecture.adapter.PlanListAdapter;
 import com.zhangqi.architecture.adapter.api.ICardViewListener;
+import com.zhangqi.architecture.app.AppController;
 import com.zhangqi.architecture.model.bean.PlanListModel;
 import com.zhangqi.architecture.model.bean.UserInfo;
 import com.zhangqi.architecture.presenter.MainPresenter;
@@ -85,12 +86,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
      * @return UserInfoBean:userName,userId,userBalance,userAvatar
      */
     private UserInfo.UserInfoBean getUserInfo() {
-        UserInfo.UserInfoBean userInfoBean = new UserInfo.UserInfoBean();
-        userInfoBean.setUserName(getIntent().getStringExtra(Constant.USER_NAME));
-        userInfoBean.setId(getIntent().getIntExtra(Constant.USER_ID, -1));
-        userInfoBean.setBalance(getIntent().getIntExtra(Constant.USER_BALANCE, -1));
-        userInfoBean.setAvatar(Constant.AVATAR_PREFIX + getIntent().getStringExtra(Constant.USER_AVATAR));
-        return userInfoBean;
+        AppController.getInstance().setUserInfo(getIntent().getStringExtra(Constant.USER_NAME)
+                , getIntent().getIntExtra(Constant.USER_ID, -1), getIntent().getIntExtra(Constant.USER_BALANCE, -1)
+                , Constant.AVATAR_PREFIX + getIntent().getStringExtra(Constant.USER_AVATAR));
+        return AppController.getInstance().getUserInfo();
     }
 
     /**

@@ -2,7 +2,9 @@ package com.zhangqi.architecture.presenter;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.zhangqi.architecture.model.api.IGetDataListener;
+import com.zhangqi.architecture.model.bean.EvidenceModel;
 import com.zhangqi.architecture.model.engine.GetDataImpl;
 import com.zhangqi.architecture.presenter.api.IUploadOrJudgeListener;
 import com.zhangqi.architecture.presenter.api.IUploadPictureListener;
@@ -29,8 +31,8 @@ public class UploadOrJudgePresenter implements IUploadPictureListener {
         UploadPhoto.getInstance(null).doUpload(url, "\"planItemId\":" + planId, picturePath);
     }
 
-    public void doJudge(int userId, int planId, int judge) {
-        String url = "http://" + Constant.IP + ":8080/arc/judge/judge?message={\"userId\":" + userId + ",\"planItemId\":" + planId + ",\"judge\":" + judge + "}";
+    public void doJudge(int userId, int planId, int judge, String comment) {
+        String url = "http://" + Constant.IP + ":8080/arc/judge/judge?message={\"userId\":" + userId + ",\"planItemId\":" + planId + ",\"judge\":" + judge + ",\"comment\":" + comment + "}";
         mGetDataImpl.getData(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -50,6 +52,26 @@ public class UploadOrJudgePresenter implements IUploadPictureListener {
 
             }
         });
+    }
+
+    public void doGetEvidence(int planId) {
+        String url = "http://" + Constant.IP + ":8080/arc/plan/getEvidence?message={\"planItemId\":" + planId + "}";
+        mGetDataImpl.getData(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                Gson gson = new Gson();
+                EvidenceModel evidenceModel = gson.fromJson(s, EvidenceModel.class);
+                if (evidenceModel != null && evidenceModel.getCode() == 0) {
+                    mView.onGetEvidenceSuccess(evidenceModel.getRows());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+
     }
 
 

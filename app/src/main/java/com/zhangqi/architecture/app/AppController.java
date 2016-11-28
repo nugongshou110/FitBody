@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.zhangqi.architecture.model.bean.UserInfo;
 
 /**
  * Created by zhangqi on 16/11/17.
@@ -14,6 +15,7 @@ public class AppController extends Application {
     public static final String TAG = AppController.class.getSimpleName();
 
     private RequestQueue mRequestQueue;
+    private UserInfo.UserInfoBean mUserInfo;
 
     private static AppController mInstance;
 
@@ -21,6 +23,24 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+    }
+
+    public void setUserInfo(String userName, int userId, int userBalance, String userAvatar) {
+        if (mUserInfo == null) {
+            mUserInfo = new UserInfo.UserInfoBean();
+        }
+        mUserInfo.setUserName(userName);
+        mUserInfo.setAvatar(userAvatar);
+        mUserInfo.setId(userId);
+        mUserInfo.setBalance(userBalance);
+    }
+
+    public UserInfo.UserInfoBean getUserInfo() {
+        if (mUserInfo == null) {
+            return null;
+        } else {
+            return mUserInfo;
+        }
     }
 
     public static synchronized AppController getInstance() {
@@ -34,7 +54,6 @@ public class AppController extends Application {
 
         return mRequestQueue;
     }
-
 
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {
