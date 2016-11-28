@@ -18,4 +18,12 @@ public class Constant {
     public static final int RESULT_LOAD_IMAGE = 11;
     public static final String ADD_PLAN = "add_plan";
     public static final String ADD_PLAN_SUCCESS = "success";
+    public static final String DISMISS_ADD_GROUP = "dismiss_add_group";
+    public static final String PLAN_ID = "plan_id";
+    public static final String AVATAR_SELF = "avatar_self";
+    public static final String EVIDENCE_PHOTO = "evidence_photo";
+    public static final String IS_SELF = "isSelf";
+    public static final String DATE = "date";
+    public static final String PLAN_DETAIL = "plan_detail";
+    public static final String STATE = "state";
 }

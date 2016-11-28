@@ -1,6 +1,6 @@
 package com.zhangqi.architecture.util;
 
-import com.zhangqi.architecture.presenter.api.IRegisterListener;
+import com.zhangqi.architecture.presenter.api.IUploadPictureListener;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -22,16 +22,16 @@ public class UploadPhoto {
     public static final String SUCCESS = "1";
     public static final String FAILURE = "0";
     private static UploadPhoto mInstance;
-    private IRegisterListener mRegisterListener;
+    private IUploadPictureListener mRegisterListener;
 
-    public static UploadPhoto getInstance(IRegisterListener listener) {
+    public static UploadPhoto getInstance(IUploadPictureListener listener) {
         if (mInstance == null) {
             mInstance = new UploadPhoto(listener);
         }
         return mInstance;
     }
 
-    public UploadPhoto(IRegisterListener listener){
+    public UploadPhoto(IUploadPictureListener listener){
         mRegisterListener = listener;
     }
 
@@ -88,7 +88,7 @@ public class UploadPhoto {
                  */
                 int res = conn.getResponseCode();
                 if (res == 200) {
-                    mRegisterListener.onRegisterSuccess();
+                    mRegisterListener.onUploadSuccess();
                     return SUCCESS;
                 }
             }

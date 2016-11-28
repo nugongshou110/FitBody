@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.view.Menu;
@@ -59,12 +58,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void refreshPlanList() {
-        String addPlan = getIntent().getStringExtra(Constant.ADD_PLAN);
-        if (!TextUtils.isEmpty(addPlan)) {
-            mData.clear();
-            mSwipeRefreshLayout.setRefreshing(true);
-            mPresenter.getPlanList();
-        }
+        mData.clear();
+        mSwipeRefreshLayout.setRefreshing(true);
+        mPresenter.getPlanList();
     }
 
     private void initData() {
@@ -185,8 +181,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onCardViewClick(int position) {
         PlanListModel.RowsBean rowsBean = mData.get(position);
         Intent intent = new Intent(MainActivity.this, PlanDetailActivity.class);
+        intent.putExtra(Constant.PLAN_ID, rowsBean.getId());
         intent.putExtra(Constant.TITLE, rowsBean.getUserName() + "的健身计划");
         intent.putExtra(Constant.USER_AVATAR, Constant.AVATAR_PREFIX + rowsBean.getUserAvatar());
+        intent.putExtra(Constant.AVATAR_SELF, mUserInfo.getAvatar());
+        intent.putExtra(Constant.USER_ID, mUserInfo.getId());
+        if (mUserInfo.getId() == rowsBean.getUserId()) {
+            intent.putExtra(Constant.DISMISS_ADD_GROUP, true);
+        }
         List<PlanListModel.RowsBean.SupervisorsBean> supervison = rowsBean.getSupervisors();
         try {
             if (supervison != null && supervison.size() != 0) {

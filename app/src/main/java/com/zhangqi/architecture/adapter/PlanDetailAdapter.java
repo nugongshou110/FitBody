@@ -12,7 +12,7 @@ import com.zhangqi.architecture.R;
 import com.zhangqi.architecture.model.bean.PlanDetailModel;
 import com.zhangqi.architecture.view.widget.JudgeView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhangqi on 16/11/20.
@@ -20,12 +20,14 @@ import java.util.ArrayList;
 public class PlanDetailAdapter extends BaseAdapter {
     private Activity mActivity;
     private LayoutInflater mInflater;
-    private ArrayList<PlanDetailModel.RowsBean.DetailBean> mDatas;
+    private List<PlanDetailModel.RowsBean> mDatas;
+    private String mPlanName;
 
-    public PlanDetailAdapter(Activity activity, ArrayList<PlanDetailModel.RowsBean.DetailBean> data) {
+    public PlanDetailAdapter(Activity activity, List<PlanDetailModel.RowsBean> data, String planName) {
         mInflater = LayoutInflater.from(activity);
         mActivity = activity;
         mDatas = data;
+        mPlanName = planName;
     }
 
     @Override
@@ -60,10 +62,10 @@ public class PlanDetailAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        PlanDetailModel.RowsBean.DetailBean detailBean = mDatas.get(position);
-        viewHolder.mDate.setText(detailBean.getDate());
-        viewHolder.mPlan.setText(detailBean.getPlan());
-        int state = detailBean.getState();
+        PlanDetailModel.RowsBean bean = mDatas.get(position);
+        viewHolder.mDate.setText(bean.getPlanDate());
+        viewHolder.mPlan.setText(mPlanName);
+        int state = bean.getStatus();
         switch (state) {
             case 0:
                 viewHolder.mState.setText("未开始");
@@ -72,6 +74,14 @@ public class PlanDetailAdapter extends BaseAdapter {
             case 1:
                 viewHolder.mState.setText("进行中");
                 viewHolder.mState.setBackground(mActivity.getDrawable(R.drawable.bg_round_state_ongoing));
+                break;
+            case 2:
+                viewHolder.mState.setText("成功");
+                viewHolder.mState.setBackground(mActivity.getDrawable(R.drawable.bg_round_state_success));
+                break;
+            case 3:
+                viewHolder.mState.setText("失败");
+                viewHolder.mState.setBackground(mActivity.getDrawable(R.drawable.bg_round_state_fail));
                 break;
         }
 

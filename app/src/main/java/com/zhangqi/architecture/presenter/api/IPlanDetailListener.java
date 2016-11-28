@@ -8,5 +8,7 @@ import java.util.List;
  * Created by zhangqi on 16/11/20.
  */
 public interface IPlanDetailListener {
-    void onRequestSuccess(List<PlanDetailModel.RowsBean.DetailBean> data);
+    void onRequestPlanDetailSuccess(List<PlanDetailModel.RowsBean> data,String planName);
+
+    void onAddGroupSuccess();
 }

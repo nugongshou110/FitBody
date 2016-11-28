@@ -15,7 +15,7 @@ import com.zhangqi.architecture.R;
 import com.zhangqi.architecture.model.bean.UserInfo;
 import com.zhangqi.architecture.presenter.LoginPresenter;
 import com.zhangqi.architecture.presenter.api.ILoginListener;
-import com.zhangqi.architecture.presenter.api.IRegisterListener;
+import com.zhangqi.architecture.presenter.api.IUploadPictureListener;
 import com.zhangqi.architecture.util.Constant;
 import com.zhangqi.architecture.util.UploadPhoto;
 import com.zhangqi.architecture.view.widget.CircleImageView;
@@ -23,7 +23,7 @@ import com.zhangqi.architecture.view.widget.CircleImageView;
 /**
  * Created by zhangqi on 16/11/25.
  */
-public class RegisterActivity extends Activity implements IRegisterListener,ILoginListener<UserInfo.UserInfoBean> {
+public class RegisterActivity extends Activity implements IUploadPictureListener,ILoginListener<UserInfo.UserInfoBean> {
     private EditText mUserNameEt;
     private EditText mUserPasswordEt;
     private CircleImageView mUploadAcatar;
@@ -93,7 +93,7 @@ public class RegisterActivity extends Activity implements IRegisterListener,ILog
     }
 
     @Override
-    public void onRegisterSuccess() {
+    public void onUploadSuccess() {
         LoginPresenter presenter = new LoginPresenter(this);
         presenter.doLogin(mUserNameString,mUserPasswordString);
     }
