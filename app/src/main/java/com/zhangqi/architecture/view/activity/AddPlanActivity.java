@@ -22,7 +22,7 @@ import com.zhangqi.architecture.util.Constant;
 /**
  * Created by zhangqi on 16/11/13.
  */
-public class AddPlanActivity extends AppCompatActivity implements IAddPlanListener{
+public class AddPlanActivity extends AppCompatActivity implements IAddPlanListener {
     private TextView mSelectStartDate;
     private TextView mSelectEndDate;
     private TextView mStartDate;
@@ -41,7 +41,7 @@ public class AddPlanActivity extends AppCompatActivity implements IAddPlanListen
         setContentView(R.layout.add_plan);
         initView();
         initActivityBar();
-        mPresenter = new AddPlanPresenter();
+        mPresenter = new AddPlanPresenter(this);
     }
 
     private void initActivityBar() {
@@ -54,7 +54,7 @@ public class AddPlanActivity extends AppCompatActivity implements IAddPlanListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
@@ -103,8 +103,8 @@ public class AddPlanActivity extends AppCompatActivity implements IAddPlanListen
             @Override
             public void onClick(View v) {
                 int userId = getIntent().getIntExtra(Constant.USER_ID, -1);
-                mPresenter.doAddPlan(userId,mStartDate.getText().toString(),
-                        mEndDate.getText().toString(),mMoney.getText().toString(),
+                mPresenter.doAddPlan(userId, mStartDate.getText().toString(),
+                        mEndDate.getText().toString(), mMoney.getText().toString(),
                         mPlanDetailEt.getText().toString());
             }
         });
@@ -121,8 +121,14 @@ public class AddPlanActivity extends AppCompatActivity implements IAddPlanListen
                 int year = datePicker.getYear();
                 int month = datePicker.getMonth();
                 int day = datePicker.getDayOfMonth();
+                String finalDay;
+                if (day < 10) {
+                    finalDay = "0" + day;
+                } else {
+                    finalDay = "" + day;
+                }
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(year).append("/").append(month + 1).append("/").append(day);
+                stringBuilder.append(year).append("-").append(month + 1).append("-").append(finalDay);
                 if (start) {
                     mStartDate.setText(stringBuilder.toString());
                 } else {
@@ -189,8 +195,8 @@ public class AddPlanActivity extends AppCompatActivity implements IAddPlanListen
 
     @Override
     public void onAddPlanSuccess() {
-        Intent intent = new Intent(AddPlanActivity.this,MainActivity.class);
-        intent.putExtra(Constant.ADD_PLAN,Constant.ADD_PLAN_SUCCESS);
+        Intent intent = new Intent(AddPlanActivity.this, MainActivity.class);
+        intent.putExtra(Constant.ADD_PLAN, Constant.ADD_PLAN_SUCCESS);
         startActivity(intent);
         finish();
     }

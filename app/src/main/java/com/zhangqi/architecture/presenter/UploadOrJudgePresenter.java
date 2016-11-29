@@ -5,6 +5,7 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.zhangqi.architecture.model.api.IGetDataListener;
 import com.zhangqi.architecture.model.bean.EvidenceModel;
+import com.zhangqi.architecture.model.bean.JudgeModel;
 import com.zhangqi.architecture.model.engine.GetDataImpl;
 import com.zhangqi.architecture.presenter.api.IUploadOrJudgeListener;
 import com.zhangqi.architecture.presenter.api.IUploadPictureListener;
@@ -32,7 +33,13 @@ public class UploadOrJudgePresenter implements IUploadPictureListener {
     }
 
     public void doJudge(int userId, int planId, int judge, String comment) {
-        String url = "http://" + Constant.IP + ":8080/arc/judge/judge?message={\"userId\":" + userId + ",\"planItemId\":" + planId + ",\"judge\":" + judge + ",\"comment\":" + comment + "}";
+        JudgeModel judgeModel = new JudgeModel();
+        judgeModel.setUserId(userId);
+        judgeModel.setPlanItemId(planId);
+        judgeModel.setComment(comment);
+        Gson gson = new Gson();
+        String msg = gson.toJson(judgeModel);
+        String url = "http://" + Constant.IP + ":8080/arc/judge/judge?message="+msg;
         mGetDataImpl.getData(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {

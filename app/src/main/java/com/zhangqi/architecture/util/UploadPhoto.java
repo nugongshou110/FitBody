@@ -1,5 +1,7 @@
 package com.zhangqi.architecture.util;
 
+import android.util.Log;
+
 import com.zhangqi.architecture.presenter.api.IUploadPictureListener;
 
 import java.io.DataOutputStream;
@@ -42,7 +44,8 @@ public class UploadPhoto {
         File file = new File(picturePath);
 
         try {
-            URL url = new URL(RequestURL + "?message={"+msg+"}");
+            URL url = new URL(RequestURL + "?message="+msg);
+            Log.i("zhangqiaaa","uploadPhoto url = "+url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(TIME_OUT);
             conn.setConnectTimeout(TIME_OUT);

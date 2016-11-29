@@ -8,6 +8,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.zhangqi.architecture.app.AppController;
 import com.zhangqi.architecture.model.api.IGetDataListener;
+import com.zhangqi.architecture.model.bean.RegisterClientModel;
 import com.zhangqi.architecture.model.bean.UserInfo;
 import com.zhangqi.architecture.model.engine.GetDataImpl;
 import com.zhangqi.architecture.presenter.api.ILoginListener;
@@ -24,7 +25,14 @@ public class LoginPresenter {
         mView = view;
     }
     public void doLogin(String name,String password){
-        String url = "http://"+ Constant.IP+":8080/arc/user/login?message={\"userName\":"+name+",\"password\":"+password+"}";
+        Log.i("zhangqiaaa","LoginPresenter doLogin name = "+name+" password = "+password);
+        RegisterClientModel registerClientModel = new RegisterClientModel();
+        registerClientModel.setUserName(name);
+        registerClientModel.setPassword(password);
+        Gson gson = new Gson();
+        String msg = gson.toJson(registerClientModel);
+        String url = "http://"+ Constant.IP+":8080/arc/user/login?message="+msg;
+        Log.i("zhangqiaaa","login url = "+url);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {

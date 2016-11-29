@@ -2,6 +2,7 @@ package com.zhangqi.architecture.app;
 
 import android.app.Application;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -64,6 +65,7 @@ public class AppController extends Application {
 
     public <T> void addToRequestQueue(Request<T> req) {
         req.setTag(TAG);
+        Log.i("zhangqiaaa","getRequestQueue = "+getRequestQueue());
         getRequestQueue().add(req);
     }
 

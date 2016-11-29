@@ -79,7 +79,7 @@ public class PlanListAdapter extends BaseAdapter {
             }
         });
         viewHolder.mName.setText(rowsBean.getUserName());
-        viewHolder.mCash.setText(rowsBean.getMoney());
+//        viewHolder.mCash.setText(rowsBean.getMoney());
         Glide.with(mActivity)
                 .load(Constant.AVATAR_PREFIX + rowsBean.getUserAvatar())
                 .centerCrop()

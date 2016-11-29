@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,6 +57,7 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
         mEvidencePhotoUrl = getIntent().getStringExtra(Constant.EVIDENCE_PHOTO);
         mPresenter = new UploadOrJudgePresenter(this);
         mIsSelf = getIntent().getBooleanExtra(Constant.IS_SELF, false);
+        Log.i("zhangqiddd","isSelf = "+mIsSelf);
         mTvNotify = (TextView) findViewById(R.id.tv_notify);
         mIvEvidence = (ImageView) findViewById(R.id.iv_evidence);
         mJudgeResult = (ImageView) findViewById(R.id.judge_result);
@@ -81,6 +83,11 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
         } else {
             mTvNotify.setVisibility(View.GONE);
             Glide.with(this).load(mEvidencePhotoUrl).centerCrop().crossFade().into(mIvEvidence);
+            if (mIsSelf){
+                mIvDisaccept.setVisibility(View.GONE);
+            }else{
+                mIvDisaccept.setVisibility(View.VISIBLE);
+            }
         }
         mDate.setText(getIntent().getStringExtra(Constant.DATE));
         mPlanDetail.setText(getIntent().getStringExtra(Constant.PLAN_DETAIL));
@@ -124,6 +131,7 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
             }
         });
         builder.setView(view);
+        builder.show();
     }
 
     @Override
@@ -193,14 +201,16 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
 
     @Override
     public void onGetEvidenceSuccess(List<EvidenceModel.RowsBean> data) {
-        mDisacceptDatas = data;
-        for (int i = 0; i < data.size(); i++) {
-            EvidenceModel.RowsBean rowsBean = data.get(i);
-            if (getIntent().getIntExtra(Constant.USER_ID, -1) == rowsBean.getId()) {
-                mIvDisaccept.setVisibility(View.GONE);
+        if (data != null) {
+            mDisacceptDatas = data;
+            for (int i = 0; i < data.size(); i++) {
+                EvidenceModel.RowsBean rowsBean = data.get(i);
+                if (getIntent().getIntExtra(Constant.USER_ID, -1) == rowsBean.getId()) {
+                    mIvDisaccept.setVisibility(View.GONE);
+                }
             }
+            refreshComment(data);
         }
-        refreshComment(data);
     }
 
     private void refreshComment(List<EvidenceModel.RowsBean> data) {

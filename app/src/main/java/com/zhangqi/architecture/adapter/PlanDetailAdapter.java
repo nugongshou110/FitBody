@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zhangqi.architecture.R;
+import com.zhangqi.architecture.adapter.api.ICardViewListener;
 import com.zhangqi.architecture.model.bean.PlanDetailModel;
 import com.zhangqi.architecture.view.widget.JudgeView;
 
@@ -22,12 +24,17 @@ public class PlanDetailAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<PlanDetailModel.RowsBean> mDatas;
     private String mPlanName;
+    private ICardViewListener mListener;
 
     public PlanDetailAdapter(Activity activity, List<PlanDetailModel.RowsBean> data, String planName) {
         mInflater = LayoutInflater.from(activity);
         mActivity = activity;
         mDatas = data;
         mPlanName = planName;
+    }
+
+    public void setIPlanDetailListener(ICardViewListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -46,11 +53,18 @@ public class PlanDetailAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.plan_detail_item, parent, false);
+            viewHolder.plan_detail_container = (RelativeLayout) convertView.findViewById(R.id.plan_detail_container);
+            viewHolder.plan_detail_container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onCardViewClick(position);
+                }
+            });
             viewHolder.mDate = (TextView) convertView.findViewById(R.id.date);
             viewHolder.mPlan = (TextView) convertView.findViewById(R.id.plan);
             viewHolder.mState = (Button) convertView.findViewById(R.id.state);
@@ -89,6 +103,7 @@ public class PlanDetailAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
+        private RelativeLayout plan_detail_container;
         private TextView mDate;
         private TextView mPlan;
         private Button mState;

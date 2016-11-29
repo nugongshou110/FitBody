@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.zhangqi.architecture.R;
 import com.zhangqi.architecture.adapter.PlanDetailAdapter;
+import com.zhangqi.architecture.adapter.api.ICardViewListener;
 import com.zhangqi.architecture.model.bean.PlanDetailModel;
 import com.zhangqi.architecture.presenter.PlanDetailPresenter;
 import com.zhangqi.architecture.presenter.api.IPlanDetailListener;
@@ -25,7 +26,7 @@ import java.util.List;
 /**
  * Created by zhangqi on 16/11/13.
  */
-public class PlanDetailActivity extends AppCompatActivity implements IPlanDetailListener {
+public class PlanDetailActivity extends AppCompatActivity implements IPlanDetailListener,ICardViewListener {
     private CircleImageView mAvater, mFollower1, mFollower2, mFollower3, mFollower4;
     private TextView mAddGroup;
     private List<PlanDetailModel.RowsBean> mDatas;
@@ -40,21 +41,21 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.plan_detail);
-        initActionBar();
-        initView();
         mSupervisors = new ArrayList<String>();
         mPresenter = new PlanDetailPresenter(this);
-        registerListener();
         int planId = getIntent().getIntExtra(Constant.PLAN_ID, -1);
+        initActionBar();
+        initView();
+        registerListener();
         mPresenter.requestPlanDetail(planId);
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        int planId = intent.getIntExtra(Constant.PLAN_ID, -1);
-        mPresenter.requestPlanDetail(planId);
-    }
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        super.onNewIntent(intent);
+//        int planId = intent.getIntExtra(Constant.PLAN_ID, -1);
+//        mPresenter.requestPlanDetail(planId);
+//    }
 
     private void initView() {
         Intent intent = getIntent();
@@ -128,15 +129,7 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PlanDetailModel.RowsBean bean = mDatas.get(position);
-                Intent intent = new Intent(PlanDetailActivity.this, JudgeOrUploadActivity.class);
-                intent.putExtra(Constant.DATE,bean.getPlanDate());
-                intent.putExtra(Constant.PLAN_DETAIL,mPlanName);
-                intent.putExtra(Constant.PLAN_ID,bean.getId());
-                intent.putExtra(Constant.USER_ID,getIntent().getIntExtra(Constant.USER_ID,-1));
-                intent.putExtra(Constant.EVIDENCE_PHOTO, Constant.AVATAR_PREFIX + bean.getEvidencePhoto());
-                intent.putExtra(Constant.IS_SELF, mIsSelfPlan);
-                startActivity(intent);
+
             }
         });
     }
@@ -180,9 +173,23 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
         mPlanName = planName;
         if (mAdapter == null) {
             mAdapter = new PlanDetailAdapter(this, data, planName);
+            mAdapter.setIPlanDetailListener(this);
             mListView.setAdapter(mAdapter);
         } else {
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onCardViewClick(int position) {
+        PlanDetailModel.RowsBean bean = mDatas.get(position);
+        Intent intent = new Intent(PlanDetailActivity.this, JudgeOrUploadActivity.class);
+        intent.putExtra(Constant.DATE,bean.getPlanDate());
+        intent.putExtra(Constant.PLAN_DETAIL,mPlanName);
+        intent.putExtra(Constant.PLAN_ID,bean.getId());
+        intent.putExtra(Constant.USER_ID,getIntent().getIntExtra(Constant.USER_ID,-1));
+        intent.putExtra(Constant.EVIDENCE_PHOTO, Constant.AVATAR_PREFIX + bean.getEvidencePhoto());
+        intent.putExtra(Constant.IS_SELF, mIsSelfPlan);
+        startActivity(intent);
     }
 }

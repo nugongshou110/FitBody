@@ -6,12 +6,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.zhangqi.architecture.R;
+import com.zhangqi.architecture.model.bean.RegisterClientModel;
 import com.zhangqi.architecture.model.bean.UserInfo;
 import com.zhangqi.architecture.presenter.LoginPresenter;
 import com.zhangqi.architecture.presenter.api.ILoginListener;
@@ -23,7 +26,7 @@ import com.zhangqi.architecture.view.widget.CircleImageView;
 /**
  * Created by zhangqi on 16/11/25.
  */
-public class RegisterActivity extends Activity implements IUploadPictureListener,ILoginListener<UserInfo.UserInfoBean> {
+public class RegisterActivity extends Activity implements IUploadPictureListener, ILoginListener<UserInfo.UserInfoBean> {
     private EditText mUserNameEt;
     private EditText mUserPasswordEt;
     private CircleImageView mUploadAcatar;
@@ -52,7 +55,7 @@ public class RegisterActivity extends Activity implements IUploadPictureListener
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -86,25 +89,38 @@ public class RegisterActivity extends Activity implements IUploadPictureListener
     }
 
     private void register() {
-        String url = "http://"+Constant.IP+":8080/arc/user/register";
+        final String url = "http://" + Constant.IP + ":8080/arc/user/register";
+        Log.i("zhangqiaaa", "register url = " + url);
         mUserNameString = mUserNameEt.getText().toString().trim();
         mUserPasswordString = mUserPasswordEt.getText().toString().trim();
-        UploadPhoto.getInstance(this).doUpload(url, "\"userName\":"+mUserNameString+",\"password\":"+mUserPasswordString+"", mAvatarPath);
+        RegisterClientModel registerClientModel = new RegisterClientModel();
+        registerClientModel.setUserName(mUserNameString);
+        registerClientModel.setPassword(mUserPasswordString);
+        Gson gson = new Gson();
+        final String msg = gson.toJson(registerClientModel);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                UploadPhoto.getInstance(RegisterActivity.this).doUpload(url, msg, mAvatarPath);
+            }
+        }).start();
+
     }
 
     @Override
     public void onUploadSuccess() {
         LoginPresenter presenter = new LoginPresenter(this);
-        presenter.doLogin(mUserNameString,mUserPasswordString);
+        presenter.doLogin(mUserNameString, mUserPasswordString);
     }
 
     @Override
     public void onLoginSuccess(UserInfo.UserInfoBean userInfoBean) {
+        Log.i("zhangqiaaa","onLoginSuccess");
         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
         intent.putExtra(Constant.USER_NAME, userInfoBean.getUserName());
-        intent.putExtra(Constant.USER_AVATAR,userInfoBean.getAvatar());
-        intent.putExtra(Constant.USER_BALANCE,userInfoBean.getBalance());
-        intent.putExtra(Constant.USER_ID,userInfoBean.getId());
+        intent.putExtra(Constant.USER_AVATAR, userInfoBean.getAvatar());
+        intent.putExtra(Constant.USER_BALANCE, userInfoBean.getBalance());
+        intent.putExtra(Constant.USER_ID, userInfoBean.getId());
         startActivity(intent);
     }
 }

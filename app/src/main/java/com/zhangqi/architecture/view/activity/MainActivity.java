@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void initData() {
+        mData = new ArrayList<PlanListModel.RowsBean>();
         mPresenter = new MainPresenter(this);
         mUserInfo = getUserInfo();
         mTestData = new ArrayList<PlanListModel.RowsBean>();
@@ -146,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRequestSuccess(List<PlanListModel.RowsBean> data) {
+        Log.i("zhangqibbb","onRequestSuccess");
         mData = data;
         mSwipeRefreshLayout.setRefreshing(false);
         updateListView();
@@ -167,13 +170,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void updateListView() {
-        if (mAdatper == null) {
             mAdatper = new PlanListAdapter(this, mData);
             mAdatper.setCardViewListener(this);
             mListView.setAdapter(mAdatper);
-        } else {
-            mAdatper.notifyDataSetChanged();
-        }
+
     }
 
     @Override

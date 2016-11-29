@@ -23,20 +23,20 @@
         <RadioButton
             android:id="@+id/rb1"
             android:layout_width="wrap_content"
-            android:text="200元"
+            android:text="200"
             android:padding="10dp"
             android:layout_height="wrap_content"
             android:checked="true"/>
         <RadioButton
             android:id="@+id/rb2"
             android:layout_width="wrap_content"
-            android:text="500元"
+            android:text="500"
             android:padding="10dp"
             android:layout_height="wrap_content" />
         <RadioButton
             android:id="@+id/rb3"
             android:layout_width="wrap_content"
-            android:text="1000元"
+            android:text="1000"
             android:padding="10dp"
             android:layout_height="wrap_content" />
     </RadioGroup>

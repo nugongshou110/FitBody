@@ -8,12 +8,17 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.zhangqi.architecture.app.AppController;
 import com.zhangqi.architecture.model.bean.AddPlanModel;
+import com.zhangqi.architecture.presenter.api.IAddPlanListener;
 import com.zhangqi.architecture.util.Constant;
 
 /**
  * Created by zhangqi on 16/11/27.
  */
 public class AddPlanPresenter {
+    private IAddPlanListener mView;
+    public AddPlanPresenter(IAddPlanListener view){
+        mView = view;
+    }
     public void doAddPlan(int userId, String startDate, String endDate, String cash, String planDetail) {
         AddPlanModel addPlanModel = new AddPlanModel();
         addPlanModel.setStartTime(startDate);
@@ -24,10 +29,12 @@ public class AddPlanPresenter {
         Gson gson = new Gson();
         String message = gson.toJson(addPlanModel);
         String url = "http://" + Constant.IP + ":8080/arc/plan/addPlan/?message=" + message;
+        Log.i("zhangqiaaa","add plan url = "+url);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-
+                Log.i("zhangqiaaa","doAddPlan response = "+s);
+                mView.onAddPlanSuccess();
             }
         }, new Response.ErrorListener() {
             @Override

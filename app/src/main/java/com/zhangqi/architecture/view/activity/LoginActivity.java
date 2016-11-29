@@ -17,19 +17,20 @@ import com.zhangqi.architecture.util.Constant;
  * Created by zhangqi on 16/11/13.
  */
 public class LoginActivity extends Activity implements ILoginListener<UserInfo.UserInfoBean> {
+    private EditText mLoginNameEt,mLoginPasswordEt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        mLoginNameEt = (EditText) findViewById(R.id.et_name);
+        mLoginPasswordEt = (EditText) findViewById(R.id.et_password);
         final LoginPresenter mPresenter = new LoginPresenter(this);
-        EditText mLoginNameEt = (EditText) findViewById(R.id.et_name);
-        EditText mLoginPasswordEt = (EditText) findViewById(R.id.et_password);
-        final String name = mLoginNameEt.getText().toString().trim();
-        final String password = mLoginPasswordEt.getText().toString().trim();
         TextView login = (TextView) findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String name = mLoginNameEt.getText().toString().trim();
+                final String password = mLoginPasswordEt.getText().toString().trim();
                 mPresenter.doLogin(name,password);
             }
         });
