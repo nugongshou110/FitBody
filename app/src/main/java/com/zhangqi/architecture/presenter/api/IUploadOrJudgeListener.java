@@ -10,5 +10,6 @@ import java.util.List;
 public interface IUploadOrJudgeListener {
     void onUploadEvidenceSuccess();
     void onDisacceptSuccess();
-    void onGetEvidenceSuccess(List<EvidenceModel.RowsBean> data);
+    void onGetEvidenceSuccess(Object obj,List<EvidenceModel.RowsBean> data);
+    void onNoUploadEvidence();
 }

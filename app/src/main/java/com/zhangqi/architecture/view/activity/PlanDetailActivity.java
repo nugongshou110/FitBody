@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by zhangqi on 16/11/13.
  */
-public class PlanDetailActivity extends AppCompatActivity implements IPlanDetailListener,ICardViewListener {
+public class PlanDetailActivity extends AppCompatActivity implements IPlanDetailListener, ICardViewListener {
     private CircleImageView mAvater, mFollower1, mFollower2, mFollower3, mFollower4;
     private TextView mAddGroup;
     private List<PlanDetailModel.RowsBean> mDatas;
@@ -120,10 +120,14 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
         mAddGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO 加入群组
-                int planId = getIntent().getIntExtra(Constant.PLAN_ID, -1);
-                int userId = getIntent().getIntExtra(Constant.USER_ID, -1);
-                mPresenter.addGroup(planId, userId);
+                if (mSupervisors.contains(getIntent().getStringExtra(Constant.AVATAR_SELF))) {
+                    Toast.makeText(PlanDetailActivity.this, "你已经监督过了", Toast.LENGTH_SHORT).show();
+                } else {
+                    //TODO 加入群组
+                    int planId = getIntent().getIntExtra(Constant.PLAN_ID, -1);
+                    int userId = getIntent().getIntExtra(Constant.USER_ID, -1);
+                    mPresenter.addGroup(planId, userId);
+                }
             }
         });
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -184,10 +188,10 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
     public void onCardViewClick(int position) {
         PlanDetailModel.RowsBean bean = mDatas.get(position);
         Intent intent = new Intent(PlanDetailActivity.this, JudgeOrUploadActivity.class);
-        intent.putExtra(Constant.DATE,bean.getPlanDate());
-        intent.putExtra(Constant.PLAN_DETAIL,mPlanName);
-        intent.putExtra(Constant.PLAN_ID,bean.getId());
-        intent.putExtra(Constant.USER_ID,getIntent().getIntExtra(Constant.USER_ID,-1));
+        intent.putExtra(Constant.DATE, bean.getPlanDate());
+        intent.putExtra(Constant.PLAN_DETAIL, mPlanName);
+        intent.putExtra(Constant.PLAN_ID, bean.getId());
+        intent.putExtra(Constant.USER_ID, getIntent().getIntExtra(Constant.USER_ID, -1));
         intent.putExtra(Constant.EVIDENCE_PHOTO, Constant.AVATAR_PREFIX + bean.getEvidencePhoto());
         intent.putExtra(Constant.IS_SELF, mIsSelfPlan);
         startActivity(intent);

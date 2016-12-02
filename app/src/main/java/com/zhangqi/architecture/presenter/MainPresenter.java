@@ -40,7 +40,6 @@ public class MainPresenter {
     public void getUserBalance(String userId) {
 
         String url = "http://" + Constant.IP + ":8080/arc/user/geBalance?userId="+userId;
-        Log.i("zhangqiaaa","getUserBanlance url = "+url);
         mGetDataImpl.getData(url, new BalanceListener(this, mView), new ErrorListener());
     }
 
@@ -55,7 +54,7 @@ public class MainPresenter {
 
         @Override
         public void onResponse(String s) {
-            Log.i("zhangqibbb","get planList response = "+s);
+            Log.i("zhangqiaaa","get planList response = "+s);
             MainPresenter presenter = mPresenterRef.get();
             IMainViewListener view = mViewRef.get();
             if (presenter != null && view != null) {
@@ -87,7 +86,6 @@ public class MainPresenter {
                 Gson gson = new Gson();
                 UserBalance userBalance = gson.fromJson(s, UserBalance.class);
                 if (userBalance != null && userBalance.getCode() == 0) {
-                    Log.i("zhangqiaaa","BalanceListener getBanlance = "+userBalance.getObj().getBalance());
                     int balance = userBalance.getObj().getBalance();
                     view.onUpdateUserBalance(String.valueOf(balance));
                 }

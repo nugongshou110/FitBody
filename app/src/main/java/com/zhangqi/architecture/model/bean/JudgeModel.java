@@ -7,6 +7,15 @@ public class JudgeModel {
     private int userId;
     private int planItemId;
     private String comment;
+    private int judge;
+
+    public int getJudge() {
+        return judge;
+    }
+
+    public void setJudge(int judge) {
+        this.judge = judge;
+    }
 
     public int getUserId() {
         return userId;

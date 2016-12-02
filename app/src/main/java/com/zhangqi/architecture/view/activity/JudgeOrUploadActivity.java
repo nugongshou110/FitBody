@@ -22,11 +22,13 @@ import com.bumptech.glide.Glide;
 import com.zhangqi.architecture.R;
 import com.zhangqi.architecture.app.AppController;
 import com.zhangqi.architecture.model.bean.EvidenceModel;
+import com.zhangqi.architecture.model.bean.EvidenceNoComment;
 import com.zhangqi.architecture.presenter.UploadOrJudgePresenter;
 import com.zhangqi.architecture.presenter.api.IUploadOrJudgeListener;
 import com.zhangqi.architecture.util.Constant;
 import com.zhangqi.architecture.view.widget.CircleImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,10 +56,8 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_judge);
         initActivityBar();
-        mEvidencePhotoUrl = getIntent().getStringExtra(Constant.EVIDENCE_PHOTO);
         mPresenter = new UploadOrJudgePresenter(this);
         mIsSelf = getIntent().getBooleanExtra(Constant.IS_SELF, false);
-        Log.i("zhangqiddd","isSelf = "+mIsSelf);
         mTvNotify = (TextView) findViewById(R.id.tv_notify);
         mIvEvidence = (ImageView) findViewById(R.id.iv_evidence);
         mJudgeResult = (ImageView) findViewById(R.id.judge_result);
@@ -72,23 +72,7 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
         mComment2 = (TextView) findViewById(R.id.disaccept_comment_2);
         mComment3 = (TextView) findViewById(R.id.disaccept_comment_3);
         mComment4 = (TextView) findViewById(R.id.disaccept_comment_4);
-        if (TextUtils.isEmpty(mEvidencePhotoUrl)) {
-            if (mIsSelf) {
-                mTvNotify.setText("点击上传图片");
-                mIvDisaccept.setVisibility(View.GONE);
-            } else {
-                mTvNotify.setText("还没有上传图片");
-                mIvDisaccept.setVisibility(View.VISIBLE);
-            }
-        } else {
-            mTvNotify.setVisibility(View.GONE);
-            Glide.with(this).load(mEvidencePhotoUrl).centerCrop().crossFade().into(mIvEvidence);
-            if (mIsSelf){
-                mIvDisaccept.setVisibility(View.GONE);
-            }else{
-                mIvDisaccept.setVisibility(View.VISIBLE);
-            }
-        }
+        mDisacceptDatas = new ArrayList<EvidenceModel.RowsBean>();
         mDate.setText(getIntent().getStringExtra(Constant.DATE));
         mPlanDetail.setText(getIntent().getStringExtra(Constant.PLAN_DETAIL));
         mPlanId = getIntent().getIntExtra(Constant.PLAN_ID, -1);
@@ -200,16 +184,55 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
     }
 
     @Override
-    public void onGetEvidenceSuccess(List<EvidenceModel.RowsBean> data) {
+    public void onGetEvidenceSuccess(Object obj, List<EvidenceModel.RowsBean> data) {
+        Log.i("zhangqieee","onGetEvidenceSuccess obj= "+obj+"  data= "+data);
+        if (data == null) {
+            EvidenceNoComment.ObjBean obj1 = (EvidenceNoComment.ObjBean) obj;
+            mEvidencePhotoUrl = obj1.getAvatar();
+        } else {
+            EvidenceModel.ObjBean obj2 = (EvidenceModel.ObjBean) obj;
+            mEvidencePhotoUrl = obj2.getAvatar();
+        }
         if (data != null) {
             mDisacceptDatas = data;
             for (int i = 0; i < data.size(); i++) {
                 EvidenceModel.RowsBean rowsBean = data.get(i);
-                if (getIntent().getIntExtra(Constant.USER_ID, -1) == rowsBean.getId()) {
+                if (getIntent().getIntExtra(Constant.USER_ID, -1) == rowsBean.getUserId()) {
                     mIvDisaccept.setVisibility(View.GONE);
                 }
             }
             refreshComment(data);
+            Log.i("zhangqieee", "evidence url = " + mEvidencePhotoUrl);
+
+        }
+        if (TextUtils.isEmpty(mEvidencePhotoUrl)) {
+            if (mIsSelf) {
+                mTvNotify.setText("点击上传图片");
+                mIvDisaccept.setVisibility(View.GONE);
+            } else {
+                mTvNotify.setText("还没有上传图片");
+                mIvDisaccept.setVisibility(View.VISIBLE);
+            }
+        } else {
+            mTvNotify.setVisibility(View.GONE);
+            Glide.with(this).load(Constant.AVATAR_PREFIX + mEvidencePhotoUrl).centerCrop().crossFade().into(mIvEvidence);
+            if (mIsSelf) {
+                mIvDisaccept.setVisibility(View.GONE);
+            } else {
+                mIvDisaccept.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public void onNoUploadEvidence() {
+        if (mIsSelf) {
+            mTvNotify.setText("点击上传图片");
+            mTvNotify.setVisibility(View.VISIBLE);
+            mIvDisaccept.setVisibility(View.GONE);
+        } else {
+            mTvNotify.setText("还没有上传图片");
+            mIvDisaccept.setVisibility(View.VISIBLE);
         }
     }
 

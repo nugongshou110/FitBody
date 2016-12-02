@@ -7,18 +7,28 @@ import java.util.List;
  */
 public class EvidenceModel {
 
+
     /**
      * code : 0
-     * rows : [{"avatar":"/media/ji/document/school/arc/evidence/1_1480077946965/idea.jpg","comment":"测试评论","created":"2016-11-25 20:45:46","id":1,"planItemId":1}]
+     * obj : {"avatar":"/data/arc/evidence/1_1480333592592/idea.jpg","comment":"测试评论","created":"2016-11-28 19:46:34","id":2,"planItemId":1}
+     * rows : [{"avatar":"/media/ji/document/school/arc/photo/1.jpeg","judge":1,"userId":1,"userName":"ji"}]
      */
 
     private int code;
     /**
-     * avatar : /media/ji/document/school/arc/evidence/1_1480077946965/idea.jpg
+     * avatar : /data/arc/evidence/1_1480333592592/idea.jpg
      * comment : 测试评论
-     * created : 2016-11-25 20:45:46
-     * id : 1
+     * created : 2016-11-28 19:46:34
+     * id : 2
      * planItemId : 1
+     */
+
+    private ObjBean obj;
+    /**
+     * avatar : /media/ji/document/school/arc/photo/1.jpeg
+     * judge : 1
+     * userId : 1
+     * userName : ji
      */
 
     private List<RowsBean> rows;
@@ -31,6 +41,14 @@ public class EvidenceModel {
         this.code = code;
     }
 
+    public ObjBean getObj() {
+        return obj;
+    }
+
+    public void setObj(ObjBean obj) {
+        this.obj = obj;
+    }
+
     public List<RowsBean> getRows() {
         return rows;
     }
@@ -39,7 +57,7 @@ public class EvidenceModel {
         this.rows = rows;
     }
 
-    public static class RowsBean {
+    public static class ObjBean {
         private String avatar;
         private String comment;
         private String created;
@@ -84,6 +102,54 @@ public class EvidenceModel {
 
         public void setPlanItemId(int planItemId) {
             this.planItemId = planItemId;
+        }
+    }
+
+    public static class RowsBean {
+        private String avatar;
+        private int judge;
+        private int userId;
+        private String userName;
+        private String comment;
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
+
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
+        }
+
+        public int getJudge() {
+            return judge;
+        }
+
+        public void setJudge(int judge) {
+            this.judge = judge;
+        }
+
+        public int getUserId() {
+            return userId;
+        }
+
+        public void setUserId(int userId) {
+            this.userId = userId;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
         }
     }
 }
