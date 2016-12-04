@@ -1,6 +1,7 @@
 package com.zhangqi.architecture.view.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -34,6 +35,7 @@ public class RegisterActivity extends Activity implements IUploadPictureListener
     private String mAvatarPath;
     private String mUserNameString;
     private String mUserPasswordString;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class RegisterActivity extends Activity implements IUploadPictureListener
         mUploadAcatar = (CircleImageView) findViewById(R.id.upload_avatar);
         mRegister = (TextView) findViewById(R.id.register);
         mLogin = (TextView) findViewById(R.id.login);
+        mProgressDialog = new ProgressDialog(this);
         //从图库中取头像并且显示出来
         mUploadAcatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +65,7 @@ public class RegisterActivity extends Activity implements IUploadPictureListener
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mProgressDialog.show();
                 register();
             }
         });
@@ -115,6 +119,7 @@ public class RegisterActivity extends Activity implements IUploadPictureListener
 
     @Override
     public void onLoginSuccess(UserInfo.UserInfoBean userInfoBean) {
+        mProgressDialog.dismiss();
         Log.i("zhangqiaaa","onLoginSuccess");
         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
         intent.putExtra(Constant.USER_NAME, userInfoBean.getUserName());

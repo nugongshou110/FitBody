@@ -1,5 +1,6 @@
 package com.zhangqi.architecture.view.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +37,7 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
     private PlanDetailPresenter mPresenter;
     private String mPlanName;
     private boolean mIsSelfPlan;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +45,12 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
         setContentView(R.layout.plan_detail);
         mSupervisors = new ArrayList<String>();
         mPresenter = new PlanDetailPresenter(this);
+        mProgressDialog = new ProgressDialog(this);
         int planId = getIntent().getIntExtra(Constant.PLAN_ID, -1);
         initActionBar();
         initView();
         registerListener();
+        mProgressDialog.show();
         mPresenter.requestPlanDetail(planId);
     }
 
@@ -161,6 +165,7 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
 
     @Override
     public void onRequestPlanDetailSuccess(List<PlanDetailModel.RowsBean> data, String planName) {
+        mProgressDialog.dismiss();
         mDatas = data;
         updateListView(data, planName);
     }

@@ -1,6 +1,7 @@
 package com.zhangqi.architecture.view.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -18,17 +19,20 @@ import com.zhangqi.architecture.util.Constant;
  */
 public class LoginActivity extends Activity implements ILoginListener<UserInfo.UserInfoBean> {
     private EditText mLoginNameEt,mLoginPasswordEt;
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         mLoginNameEt = (EditText) findViewById(R.id.et_name);
         mLoginPasswordEt = (EditText) findViewById(R.id.et_password);
+        mProgressDialog = new ProgressDialog(this);
         final LoginPresenter mPresenter = new LoginPresenter(this);
         TextView login = (TextView) findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mProgressDialog.show();
                 final String name = mLoginNameEt.getText().toString().trim();
                 final String password = mLoginPasswordEt.getText().toString().trim();
                 mPresenter.doLogin(name,password);
@@ -38,6 +42,7 @@ public class LoginActivity extends Activity implements ILoginListener<UserInfo.U
 
     @Override
     public void onLoginSuccess(UserInfo.UserInfoBean userInfoBean) {
+        mProgressDialog.dismiss();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra(Constant.USER_NAME, userInfoBean.getUserName());
         intent.putExtra(Constant.USER_AVATAR,userInfoBean.getAvatar());

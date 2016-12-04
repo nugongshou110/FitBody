@@ -1,6 +1,7 @@
 package com.zhangqi.architecture.view.activity;
 
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private TextView mName;
     private TextView mBalance;
     private UserInfo.UserInfoBean mUserInfo;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +55,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         getWindow().setEnterTransition(explode);
         getWindow().setReenterTransition(explode);
         setContentView(R.layout.activity_main);
+        mProgressDialog = new ProgressDialog(this);
         initData();
         initView();
         registerListener();
+        mProgressDialog.show();
         refreshPlanList();
     }
 
@@ -148,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRequestSuccess(List<PlanListModel.RowsBean> data) {
+        mProgressDialog.dismiss();
         Log.i("zhangqibbb","onRequestSuccess");
         mData = data;
         mSwipeRefreshLayout.setRefreshing(false);

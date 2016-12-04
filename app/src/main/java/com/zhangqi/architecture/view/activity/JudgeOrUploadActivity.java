@@ -1,5 +1,6 @@
 package com.zhangqi.architecture.view.activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -50,6 +51,7 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
     private String mPicturePath;
     private CircleImageView mAvatar1, mAvatar2, mAvatar3, mAvatar4;
     private TextView mComment1, mComment2, mComment3, mComment4;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
         setContentView(R.layout.layout_judge);
         initActivityBar();
         mPresenter = new UploadOrJudgePresenter(this);
+        mProgressDialog = new ProgressDialog(this);
         mIsSelf = getIntent().getBooleanExtra(Constant.IS_SELF, false);
         mTvNotify = (TextView) findViewById(R.id.tv_notify);
         mIvEvidence = (ImageView) findViewById(R.id.iv_evidence);
@@ -76,11 +79,13 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
         mDate.setText(getIntent().getStringExtra(Constant.DATE));
         mPlanDetail.setText(getIntent().getStringExtra(Constant.PLAN_DETAIL));
         mPlanId = getIntent().getIntExtra(Constant.PLAN_ID, -1);
-
         if (mIsSelf) {
             mIvEvidence.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (!mProgressDialog.isShowing()){
+                        mProgressDialog.show();
+                    }
                     Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, Constant.RESULT_LOAD_IMAGE);
                 }
@@ -93,6 +98,7 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
                 }
             });
         }
+        mProgressDialog.show();
         mPresenter.doGetEvidence(mPlanId);
     }
 
@@ -133,6 +139,9 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             mPicturePath = cursor.getString(columnIndex);
             cursor.close();
+            if (mProgressDialog.isShowing()){
+                mProgressDialog.dismiss();
+            }
             mPresenter.uploadEvidence(mPlanId, mPicturePath);
         }
     }
@@ -164,6 +173,7 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
 
     @Override
     public void onUploadEvidenceSuccess() {
+        mProgressDialog.dismiss();
         // String picturePath contains the path of selected Image
         Glide.with(this).load(mPicturePath).centerCrop().crossFade().into(mIvEvidence);
         Toast.makeText(this, "上传成功", Toast.LENGTH_SHORT).show();
@@ -185,7 +195,8 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
 
     @Override
     public void onGetEvidenceSuccess(Object obj, List<EvidenceModel.RowsBean> data) {
-        Log.i("zhangqieee","onGetEvidenceSuccess obj= "+obj+"  data= "+data);
+        mProgressDialog.dismiss();
+        Log.i("zhangqieee", "onGetEvidenceSuccess obj= " + obj + "  data= " + data);
         if (data == null) {
             EvidenceNoComment.ObjBean obj1 = (EvidenceNoComment.ObjBean) obj;
             mEvidencePhotoUrl = obj1.getAvatar();
@@ -222,6 +233,12 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
                 mIvDisaccept.setVisibility(View.VISIBLE);
             }
         }
+        for(int i=0 ; i<mDisacceptDatas.size();i++){
+            if (mDisacceptDatas.get(i).getUserId() == AppController.getInstance().getUserInfo().getId()){
+                mIvDisaccept.setVisibility(View.GONE);
+                mJudgeResult.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -239,19 +256,19 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
     private void refreshComment(List<EvidenceModel.RowsBean> data) {
         try {
             if (data.get(0) != null) {
-                Glide.with(this).load(Constant.AVATAR_PREFIX + data.get(0).getAvatar()).crossFade().centerCrop().into(mAvatar1);
+                Glide.with(this).load(data.get(0).getAvatar()).crossFade().centerCrop().into(mAvatar1);
                 mComment1.setText(data.get(0).getComment());
             }
             if (data.get(1) != null) {
-                Glide.with(this).load(Constant.AVATAR_PREFIX + data.get(1).getAvatar()).crossFade().centerCrop().into(mAvatar2);
+                Glide.with(this).load(data.get(1).getAvatar()).crossFade().centerCrop().into(mAvatar2);
                 mComment2.setText(data.get(1).getComment());
             }
             if (data.get(2) != null) {
-                Glide.with(this).load(Constant.AVATAR_PREFIX + data.get(2).getAvatar()).crossFade().centerCrop().into(mAvatar3);
+                Glide.with(this).load(data.get(2).getAvatar()).crossFade().centerCrop().into(mAvatar3);
                 mComment3.setText(data.get(2).getComment());
             }
             if (data.get(3) != null) {
-                Glide.with(this).load(Constant.AVATAR_PREFIX + data.get(3).getAvatar()).crossFade().centerCrop().into(mAvatar4);
+                Glide.with(this).load(data.get(3).getAvatar()).crossFade().centerCrop().into(mAvatar4);
                 mComment4.setText(data.get(3).getComment());
             }
         } catch (Exception e) {
