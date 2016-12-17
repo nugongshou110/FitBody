@@ -33,14 +33,17 @@
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".view.activity.MainActivity"
+            android:name=".view.activity.PlanListActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme"/>
         <activity android:name=".view.activity.JudgeOrUploadActivity"
             android:launchMode="singleTask"
+
+            android:theme="@style/AppTheme"
             />
         <activity android:name=".view.activity.RegisterActivity"
             android:launchMode="singleTask"
+            android:theme="@style/AppTheme"
             />
 
     </application>

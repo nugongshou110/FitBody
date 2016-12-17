@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.zhangqi.architecture.model.bean.PlanListModel;
 import com.zhangqi.architecture.model.bean.UserBalance;
 import com.zhangqi.architecture.model.engine.GetDataImpl;
-import com.zhangqi.architecture.presenter.api.IMainViewListener;
+import com.zhangqi.architecture.presenter.api.IPlanListListener;
 import com.zhangqi.architecture.util.Constant;
 
 import java.lang.ref.WeakReference;
@@ -18,13 +18,13 @@ import java.lang.ref.WeakReference;
 /**
  * Created by zhangqi on 16/11/14.
  */
-public class MainPresenter {
+public class PlanListPresenter {
     private static final int UPDATE_BALANCE = 0;
     private GetDataImpl mGetDataImpl;
-    private IMainViewListener mView;
+    private IPlanListListener mView;
     private UiHandler mHandler;
 
-    public MainPresenter(IMainViewListener view) {
+    public PlanListPresenter(IPlanListListener view) {
         mGetDataImpl = new GetDataImpl();
         mView = view;
         mHandler = new UiHandler(this,mView);
@@ -44,19 +44,19 @@ public class MainPresenter {
     }
 
     private static class PlanListListener implements Response.Listener<String> {
-        private WeakReference<MainPresenter> mPresenterRef;
-        private WeakReference<IMainViewListener> mViewRef;
+        private WeakReference<PlanListPresenter> mPresenterRef;
+        private WeakReference<IPlanListListener> mViewRef;
 
-        public PlanListListener(MainPresenter presenter, IMainViewListener view) {
-            mPresenterRef = new WeakReference<MainPresenter>(presenter);
-            mViewRef = new WeakReference<IMainViewListener>(view);
+        public PlanListListener(PlanListPresenter presenter, IPlanListListener view) {
+            mPresenterRef = new WeakReference<PlanListPresenter>(presenter);
+            mViewRef = new WeakReference<IPlanListListener>(view);
         }
 
         @Override
         public void onResponse(String s) {
             Log.i("zhangqiaaa","get planList response = "+s);
-            MainPresenter presenter = mPresenterRef.get();
-            IMainViewListener view = mViewRef.get();
+            PlanListPresenter presenter = mPresenterRef.get();
+            IPlanListListener view = mViewRef.get();
             if (presenter != null && view != null) {
                 Gson gson = new Gson();
                 PlanListModel planListModel = gson.fromJson(s, PlanListModel.class);
@@ -70,18 +70,18 @@ public class MainPresenter {
     }
 
     private static class BalanceListener implements Response.Listener<String> {
-        private WeakReference<MainPresenter> mPresenterRef;
-        private WeakReference<IMainViewListener> mViewRef;
+        private WeakReference<PlanListPresenter> mPresenterRef;
+        private WeakReference<IPlanListListener> mViewRef;
 
-        public BalanceListener(MainPresenter presenter, IMainViewListener view) {
-            mPresenterRef = new WeakReference<MainPresenter>(presenter);
-            mViewRef = new WeakReference<IMainViewListener>(view);
+        public BalanceListener(PlanListPresenter presenter, IPlanListListener view) {
+            mPresenterRef = new WeakReference<PlanListPresenter>(presenter);
+            mViewRef = new WeakReference<IPlanListListener>(view);
         }
 
         @Override
         public void onResponse(String s) {
-            MainPresenter presenter = mPresenterRef.get();
-            IMainViewListener view = mViewRef.get();
+            PlanListPresenter presenter = mPresenterRef.get();
+            IPlanListListener view = mViewRef.get();
             if (presenter != null && view != null) {
                 Gson gson = new Gson();
                 UserBalance userBalance = gson.fromJson(s, UserBalance.class);
@@ -103,22 +103,22 @@ public class MainPresenter {
     }
 
     private static class UiHandler extends Handler {
-        private WeakReference<MainPresenter> mPresenterRef;
-        private WeakReference<IMainViewListener> mViewRef;
+        private WeakReference<PlanListPresenter> mPresenterRef;
+        private WeakReference<IPlanListListener> mViewRef;
 
-        public UiHandler(MainPresenter presenter,IMainViewListener view) {
-            mPresenterRef = new WeakReference<MainPresenter>(presenter);
-            mViewRef = new WeakReference<IMainViewListener>(view);
+        public UiHandler(PlanListPresenter presenter,IPlanListListener view) {
+            mPresenterRef = new WeakReference<PlanListPresenter>(presenter);
+            mViewRef = new WeakReference<IPlanListListener>(view);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            MainPresenter mainPresenter = mPresenterRef.get();
-            IMainViewListener view = mViewRef.get();
-            if (mainPresenter != null && view != null) {
+            PlanListPresenter planListPresenter = mPresenterRef.get();
+            IPlanListListener view = mViewRef.get();
+            if (planListPresenter != null && view != null) {
                 switch (msg.what) {
                     case UPDATE_BALANCE:
-                        mainPresenter.getUserBalance(view.onGetUserId());
+                        planListPresenter.getUserBalance(view.onGetUserId());
                         break;
                 }
             }

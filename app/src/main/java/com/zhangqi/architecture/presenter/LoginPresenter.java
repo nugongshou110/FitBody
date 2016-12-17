@@ -37,6 +37,7 @@ public class LoginPresenter {
             @Override
             public void onResponse(String s) {
                 Gson gson = new Gson();
+                Log.i("zhangqifff","login = "+s);
                 UserInfo userInfo = gson.fromJson(s, UserInfo.class);
                 if (userInfo.getCode() == 0){
                     if (userInfo.getObj() != null){

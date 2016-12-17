@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by zhangqi on 16/11/14.
  */
-public interface IMainViewListener {
+public interface IPlanListListener {
     void onRequestSuccess(List<PlanListModel.RowsBean> data);
     Context onGetContext();
     void onUpdateUserBalance(String balance);

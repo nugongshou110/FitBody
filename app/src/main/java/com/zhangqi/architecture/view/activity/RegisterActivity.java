@@ -1,12 +1,12 @@
 package com.zhangqi.architecture.view.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -27,7 +27,7 @@ import com.zhangqi.architecture.view.widget.CircleImageView;
 /**
  * Created by zhangqi on 16/11/25.
  */
-public class RegisterActivity extends Activity implements IUploadPictureListener, ILoginListener<UserInfo.UserInfoBean> {
+public class RegisterActivity extends AppCompatActivity implements IUploadPictureListener, ILoginListener<UserInfo.UserInfoBean> {
     private EditText mUserNameEt;
     private EditText mUserPasswordEt;
     private CircleImageView mUploadAcatar;
@@ -41,12 +41,14 @@ public class RegisterActivity extends Activity implements IUploadPictureListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+        initActivityBar();
         mUserNameEt = (EditText) findViewById(R.id.et_username);
         mUserPasswordEt = (EditText) findViewById(R.id.et_password);
         mUploadAcatar = (CircleImageView) findViewById(R.id.upload_avatar);
         mRegister = (TextView) findViewById(R.id.register);
         mLogin = (TextView) findViewById(R.id.login);
         mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage("正在注册...");
         //从图库中取头像并且显示出来
         mUploadAcatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +71,15 @@ public class RegisterActivity extends Activity implements IUploadPictureListener
                 register();
             }
         });
+    }
+
+    private void initActivityBar() {
+        android.support.v7.app.ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setDisplayHomeAsUpEnabled(false);
+            supportActionBar.setDisplayShowTitleEnabled(true);
+            supportActionBar.setTitle("注册");
+        }
     }
 
     @Override
@@ -121,7 +132,7 @@ public class RegisterActivity extends Activity implements IUploadPictureListener
     public void onLoginSuccess(UserInfo.UserInfoBean userInfoBean) {
         mProgressDialog.dismiss();
         Log.i("zhangqiaaa","onLoginSuccess");
-        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+        Intent intent = new Intent(RegisterActivity.this, PlanListActivity.class);
         intent.putExtra(Constant.USER_NAME, userInfoBean.getUserName());
         intent.putExtra(Constant.USER_AVATAR, userInfoBean.getAvatar());
         intent.putExtra(Constant.USER_BALANCE, userInfoBean.getBalance());

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,6 +38,7 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
     private PlanDetailPresenter mPresenter;
     private String mPlanName;
     private boolean mIsSelfPlan;
+    private TextView mName;
     private ProgressDialog mProgressDialog;
 
     @Override
@@ -51,6 +53,7 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
         initView();
         registerListener();
         mProgressDialog.show();
+        mProgressDialog.setMessage("正在加载...");
         mPresenter.requestPlanDetail(planId);
     }
 
@@ -69,6 +72,7 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
         mFollower2 = (CircleImageView) findViewById(R.id.follower_2);
         mFollower3 = (CircleImageView) findViewById(R.id.follower_3);
         mFollower4 = (CircleImageView) findViewById(R.id.follower_4);
+        mName = (TextView) findViewById(R.id.name);
         mListView = (ListView) findViewById(R.id.detail_listview);
         Glide.with(this).load(intent.getStringExtra(Constant.USER_AVATAR)).centerCrop().crossFade().into(mAvater);
         initSupervisors(intent);
@@ -79,6 +83,7 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
         } else {
             mAddGroup.setVisibility(View.VISIBLE);
         }
+        mName.setText(getIntent().getStringExtra(Constant.USER_NAME));
 
     }
 
@@ -100,15 +105,19 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
     private void refreshSupervisors() {
         try {
             if (mSupervisors.get(0) != null) {
+                Log.e("zhangqifff","refreshSupervisors super 0 ="+mSupervisors.get(0));
                 Glide.with(this).load(mSupervisors.get(0)).centerCrop().crossFade().into(mFollower1);
             }
             if (mSupervisors.get(1) != null) {
+                Log.e("zhangqifff","refreshSupervisors super 1 ="+mSupervisors.get(1));
                 Glide.with(this).load(mSupervisors.get(1)).centerCrop().crossFade().into(mFollower2);
             }
             if (mSupervisors.get(2) != null) {
+                Log.e("zhangqifff","refreshSupervisors super 2 ="+mSupervisors.get(2));
                 Glide.with(this).load(mSupervisors.get(2)).centerCrop().crossFade().into(mFollower3);
             }
             if (mSupervisors.get(3) != null) {
+                Log.e("zhangqifff","refreshSupervisors super 3 ="+mSupervisors.get(3));
                 Glide.with(this).load(mSupervisors.get(3)).centerCrop().crossFade().into(mFollower4);
             }
         } catch (Exception e) {
@@ -117,7 +126,8 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
     }
 
     private void updateSupervisors() {
-        mSupervisors.add(getIntent().getStringExtra(Constant.AVATAR_SELF));
+        Log.i("zhangqifff","update Supervisors url = "+(Constant.AVATAR_PREFIX+getIntent().getStringExtra(Constant.AVATAR_SELF)));
+        mSupervisors.add(Constant.AVATAR_PREFIX+getIntent().getStringExtra(Constant.AVATAR_SELF));
     }
 
     private void registerListener() {
@@ -157,6 +167,8 @@ public class PlanDetailActivity extends AppCompatActivity implements IPlanDetail
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                Intent intent = new Intent(PlanDetailActivity.this,PlanListActivity.class);
+                startActivity(intent);
                 finish();
                 break;
         }

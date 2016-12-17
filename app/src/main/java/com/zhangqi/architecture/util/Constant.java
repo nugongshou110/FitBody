@@ -4,7 +4,7 @@ package com.zhangqi.architecture.util;
  * Created by zhangqi on 16/11/19.
  */
 public class Constant {
-    public static final String IP = "183.173.37.144";
+    public static final String IP = "183.173.60.211";
     public static final String TITLE = "title";
     public static final String USER_AVATAR = "avatar";
     public static final String FOLLOWER_1 = "follower_1";

@@ -83,9 +83,6 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
             mIvEvidence.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!mProgressDialog.isShowing()){
-                        mProgressDialog.show();
-                    }
                     Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, Constant.RESULT_LOAD_IMAGE);
                 }
@@ -98,7 +95,6 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
                 }
             });
         }
-        mProgressDialog.show();
         mPresenter.doGetEvidence(mPlanId);
     }
 
@@ -139,9 +135,7 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             mPicturePath = cursor.getString(columnIndex);
             cursor.close();
-            if (mProgressDialog.isShowing()){
-                mProgressDialog.dismiss();
-            }
+
             mPresenter.uploadEvidence(mPlanId, mPicturePath);
         }
     }
@@ -173,12 +167,17 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
 
     @Override
     public void onUploadEvidenceSuccess() {
-        mProgressDialog.dismiss();
-        // String picturePath contains the path of selected Image
-        Glide.with(this).load(mPicturePath).centerCrop().crossFade().into(mIvEvidence);
-        Toast.makeText(this, "上传成功", Toast.LENGTH_SHORT).show();
-        mTvNotify.setVisibility(View.GONE);
-        mIvDisaccept.setVisibility(View.GONE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // String picturePath contains the path of selected Image
+                Glide.with(JudgeOrUploadActivity.this).load(mPicturePath).centerCrop().crossFade().into(mIvEvidence);
+                Toast.makeText(JudgeOrUploadActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
+                mTvNotify.setVisibility(View.GONE);
+                mIvDisaccept.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     @Override
@@ -195,7 +194,6 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
 
     @Override
     public void onGetEvidenceSuccess(Object obj, List<EvidenceModel.RowsBean> data) {
-        mProgressDialog.dismiss();
         Log.i("zhangqieee", "onGetEvidenceSuccess obj= " + obj + "  data= " + data);
         if (data == null) {
             EvidenceNoComment.ObjBean obj1 = (EvidenceNoComment.ObjBean) obj;
@@ -225,6 +223,7 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
                 mIvDisaccept.setVisibility(View.VISIBLE);
             }
         } else {
+            Log.i("zhangqifff","url = "+mEvidencePhotoUrl);
             mTvNotify.setVisibility(View.GONE);
             Glide.with(this).load(Constant.AVATAR_PREFIX + mEvidencePhotoUrl).centerCrop().crossFade().into(mIvEvidence);
             if (mIsSelf) {
@@ -256,19 +255,19 @@ public class JudgeOrUploadActivity extends AppCompatActivity implements IUploadO
     private void refreshComment(List<EvidenceModel.RowsBean> data) {
         try {
             if (data.get(0) != null) {
-                Glide.with(this).load(data.get(0).getAvatar()).crossFade().centerCrop().into(mAvatar1);
+                Glide.with(this).load(Constant.AVATAR_PREFIX+data.get(0).getAvatar()).crossFade().centerCrop().into(mAvatar1);
                 mComment1.setText(data.get(0).getComment());
             }
             if (data.get(1) != null) {
-                Glide.with(this).load(data.get(1).getAvatar()).crossFade().centerCrop().into(mAvatar2);
+                Glide.with(this).load(Constant.AVATAR_PREFIX+data.get(1).getAvatar()).crossFade().centerCrop().into(mAvatar2);
                 mComment2.setText(data.get(1).getComment());
             }
             if (data.get(2) != null) {
-                Glide.with(this).load(data.get(2).getAvatar()).crossFade().centerCrop().into(mAvatar3);
+                Glide.with(this).load(Constant.AVATAR_PREFIX+data.get(2).getAvatar()).crossFade().centerCrop().into(mAvatar3);
                 mComment3.setText(data.get(2).getComment());
             }
             if (data.get(3) != null) {
-                Glide.with(this).load(data.get(3).getAvatar()).crossFade().centerCrop().into(mAvatar4);
+                Glide.with(this).load(Constant.AVATAR_PREFIX+data.get(3).getAvatar()).crossFade().centerCrop().into(mAvatar4);
                 mComment4.setText(data.get(3).getComment());
             }
         } catch (Exception e) {

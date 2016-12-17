@@ -195,7 +195,7 @@ public class AddPlanActivity extends AppCompatActivity implements IAddPlanListen
 
     @Override
     public void onAddPlanSuccess() {
-        Intent intent = new Intent(AddPlanActivity.this, MainActivity.class);
+        Intent intent = new Intent(AddPlanActivity.this, PlanListActivity.class);
         intent.putExtra(Constant.ADD_PLAN, Constant.ADD_PLAN_SUCCESS);
         startActivity(intent);
         finish();

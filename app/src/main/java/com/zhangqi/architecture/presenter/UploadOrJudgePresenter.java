@@ -41,7 +41,7 @@ public class UploadOrJudgePresenter implements IUploadPictureListener {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UploadPhoto.getInstance(null).doUpload(url, s, picturePath);
+                UploadPhoto.getInstance(UploadOrJudgePresenter.this).doUpload(url, s, picturePath);
             }
         }).start();
 

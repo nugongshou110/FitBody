@@ -2,6 +2,7 @@ package com.zhangqi.architecture.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +80,7 @@ public class PlanListAdapter extends BaseAdapter {
             }
         });
         viewHolder.mName.setText(rowsBean.getUserName());
-//        viewHolder.mCash.setText(rowsBean.getMoney());
+        viewHolder.mCash.setText(String.valueOf(rowsBean.getMoney()));
         Glide.with(mActivity)
                 .load(Constant.AVATAR_PREFIX + rowsBean.getUserAvatar())
                 .centerCrop()
@@ -89,21 +90,25 @@ public class PlanListAdapter extends BaseAdapter {
         if (supervison != null && supervison.size() != 0) {
             try {
                 if (supervison.get(0) != null) {
+                    Log.i("zhangqifff","super 0 = "+(Constant.AVATAR_PREFIX+supervison.get(0).getAvatar()));
                     Glide.with(mActivity)
                             .load(Constant.AVATAR_PREFIX + supervison.get(0).getAvatar())
                             .centerCrop().crossFade().into(viewHolder.mFollower_1);
                 }
                 if (supervison.get(1) != null) {
+                    Log.i("zhangqifff","super 1 = "+(Constant.AVATAR_PREFIX+supervison.get(1).getAvatar()));
                     Glide.with(mActivity)
                             .load(Constant.AVATAR_PREFIX + supervison.get(1).getAvatar())
                             .centerCrop().crossFade().into(viewHolder.mFollower_2);
                 }
                 if (supervison.get(2) != null) {
+                    Log.i("zhangqifff","super 2 = "+(Constant.AVATAR_PREFIX+supervison.get(2).getAvatar()));
                     Glide.with(mActivity)
                             .load(Constant.AVATAR_PREFIX + supervison.get(2).getAvatar())
                             .centerCrop().crossFade().into(viewHolder.mFollower_3);
                 }
                 if (supervison.get(3) != null) {
+                    Log.i("zhangqifff","super 3 = "+(Constant.AVATAR_PREFIX+supervison.get(3).getAvatar()));
                     Glide.with(mActivity)
                             .load(Constant.AVATAR_PREFIX + supervison.get(3).getAvatar())
                             .crossFade().crossFade().into(viewHolder.mFollower_4);

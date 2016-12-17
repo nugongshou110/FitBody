@@ -24,22 +24,22 @@ import com.zhangqi.architecture.adapter.api.ICardViewListener;
 import com.zhangqi.architecture.app.AppController;
 import com.zhangqi.architecture.model.bean.PlanListModel;
 import com.zhangqi.architecture.model.bean.UserInfo;
-import com.zhangqi.architecture.presenter.MainPresenter;
-import com.zhangqi.architecture.presenter.api.IMainViewListener;
+import com.zhangqi.architecture.presenter.PlanListPresenter;
+import com.zhangqi.architecture.presenter.api.IPlanListListener;
 import com.zhangqi.architecture.util.Constant;
 import com.zhangqi.architecture.view.widget.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, IMainViewListener, ICardViewListener {
+public class PlanListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, IPlanListListener, ICardViewListener {
     private ListView mListView;
     private TextView mAddNewPlan;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private List<PlanListModel.RowsBean> mData;
     private List<PlanListModel.RowsBean> mTestData;
     private PlanListAdapter mAdatper;
-    private MainPresenter mPresenter;
+    private PlanListPresenter mPresenter;
     private CircleImageView mAvatar;
     private TextView mName;
     private TextView mBalance;
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         getWindow().setReenterTransition(explode);
         setContentView(R.layout.activity_main);
         mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage("正在加载...");
         initData();
         initView();
         registerListener();
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void initData() {
         mData = new ArrayList<PlanListModel.RowsBean>();
-        mPresenter = new MainPresenter(this);
+        mPresenter = new PlanListPresenter(this);
         mUserInfo = getUserInfo();
         mTestData = new ArrayList<PlanListModel.RowsBean>();
     }
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private UserInfo.UserInfoBean getUserInfo() {
         AppController.getInstance().setUserInfo(getIntent().getStringExtra(Constant.USER_NAME)
                 , getIntent().getIntExtra(Constant.USER_ID, -1), getIntent().getIntExtra(Constant.USER_BALANCE, -1)
-                , Constant.AVATAR_PREFIX + getIntent().getStringExtra(Constant.USER_AVATAR));
+                , getIntent().getStringExtra(Constant.USER_AVATAR));
         return AppController.getInstance().getUserInfo();
     }
 
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private void initUserInfoPanel() {
         mName.setText(mUserInfo.getUserName());
         mBalance.setText(String.valueOf(mUserInfo.getBalance()));
-        Glide.with(this).load(mUserInfo.getAvatar()).centerCrop().crossFade().into(mAvatar);
+        Glide.with(this).load(Constant.AVATAR_PREFIX+mUserInfo.getAvatar()).centerCrop().crossFade().into(mAvatar);
     }
 
     private void registerListener() {
@@ -113,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void onClick(View view) {
                 //TODO 新建计划
-                Intent intent = new Intent(MainActivity.this, AddPlanActivity.class);
+                Intent intent = new Intent(PlanListActivity.this, AddPlanActivity.class);
                 intent.putExtra(Constant.USER_ID, mUserInfo.getId());
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(PlanListActivity.this).toBundle());
             }
         });
     }
@@ -175,21 +176,30 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void updateListView() {
-            mAdatper = new PlanListAdapter(this, mData);
-            mAdatper.setCardViewListener(this);
-            mListView.setAdapter(mAdatper);
+            if (mData != null ) {
+                mAdatper = new PlanListAdapter(this, mData);
+                mAdatper.setCardViewListener(this);
+                mListView.setAdapter(mAdatper);
+            }
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        refreshPlanList();
     }
 
     @Override
     public void onCardViewClick(int position) {
         PlanListModel.RowsBean rowsBean = mData.get(position);
-        Intent intent = new Intent(MainActivity.this, PlanDetailActivity.class);
+        Intent intent = new Intent(PlanListActivity.this, PlanDetailActivity.class);
         intent.putExtra(Constant.PLAN_ID, rowsBean.getId());
         intent.putExtra(Constant.TITLE, rowsBean.getUserName() + "的健身计划");
         intent.putExtra(Constant.USER_AVATAR, Constant.AVATAR_PREFIX + rowsBean.getUserAvatar());
         intent.putExtra(Constant.AVATAR_SELF, mUserInfo.getAvatar());
         intent.putExtra(Constant.USER_ID, mUserInfo.getId());
+        intent.putExtra(Constant.USER_NAME,rowsBean.getUserName());
         if (mUserInfo.getId() == rowsBean.getUserId()) {
             intent.putExtra(Constant.DISMISS_ADD_GROUP, true);
         }
